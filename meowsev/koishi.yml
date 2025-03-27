@@ -1,0 +1,96 @@
+plugins:
+  group:server:
+    $collapsed: true
+    server:rnsnsk:
+      port: 5140
+      maxPort: 5149
+    ~server-satori:q24w5l: {}
+    ~server-temp:xawds1: {}
+  group:basic:
+    $collapsed: true
+    ~admin:8rt0i8: {}
+    ~bind:zh3c76: {}
+    commands:b3md8x:
+      kk:
+        config:
+          permissions:
+            - authority:2
+    help:do8vp2: {}
+    http:hry6an: {}
+    ~inspect:dr092b: {}
+    locales:bzksph: {}
+    proxy-agent:3l1wvj: {}
+    rate-limit:maaahk: {}
+    telemetry:vtoyrs: {}
+  group:console:
+    $collapsed: true
+    actions:maz8ba: {}
+    analytics:z0lmk6: {}
+    android:og6h53:
+      $if: env.KOISHI_AGENT?.includes('Android')
+    ~auth:jlp5pq: {}
+    config:icy4nk: {}
+    console:xvu7v9:
+      open: true
+    dataview:dergpb: {}
+    desktop:3j6b1d:
+      $if: env.KOISHI_AGENT?.includes('Desktop')
+    explorer:k2xihh: {}
+    logger:2w5wrf: {}
+    insight:zf8gq1: {}
+    market:16u5zx:
+      search:
+        endpoint: https://registry.koishi.chat/index.json
+    notifier:mu3rk2: {}
+    oobe:cnorog: {}
+    sandbox:jsg4p3: {}
+    status:4ivm9y: {}
+    theme-vanilla:hbx362: {}
+  group:storage:
+    $collapsed: true
+    ~database-mongo:rlwdxo:
+      database: koishi
+    ~database-mysql:acu3s0:
+      database: koishi
+    ~database-postgres:dzo4ey:
+      database: koishi
+    database-sqlite:2esi42:
+      path: data/koishi.db
+    assets-local:4ggsn7: {}
+  group:adapter:
+    $collapsed: true
+    ~adapter-dingtalk:38qega: {}
+    ~adapter-discord:lwiap7: {}
+    ~adapter-kook:s920b9: {}
+    ~adapter-lark:m48sgc: {}
+    ~adapter-line:93bvvt: {}
+    ~adapter-mail:vzp9iv: {}
+    ~adapter-matrix:ueegex: {}
+    adapter-qq:9143q3:
+      id: '102573898'
+      secret: gM2iO5mTArYFxfN5nVExgP8raK4oYI2m
+      token: fWgu4Z3A75Qyr3NdWAHrllYVLfB0HhNB
+      type: private
+      sandbox: true
+      intents:
+        - USER_MESSAGE
+    ~adapter-satori:xq8kza: {}
+    ~adapter-slack:9gakeg: {}
+    ~adapter-telegram:kygg98: {}
+    ~adapter-wechat-official:0q1uuf: {}
+    ~adapter-wecom:74cz98: {}
+    ~adapter-whatsapp:6v22xq: {}
+    ~adapter-zulip:u108i8: {}
+  group:develop:
+    $if: env.NODE_ENV === 'development'
+    hmr:f1gylg:
+      root: .
+  adapter-onebot:ququs3:
+    selfId: '2314554773'
+    token: napcat
+  ai:vcpimg: {}
+  ark:iebm5d: {}
+  meower:uxqvih: {}
+prefix:
+  - MeowBot
+  - null

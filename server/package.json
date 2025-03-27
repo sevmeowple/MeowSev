@@ -1,0 +1,34 @@
+{
+  "name": "server",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "@octokit/graphql": "^8.2.1",
+    "@prisma/client": "^6.5.0",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/markdown-it": "^14.1.2",
+    "@types/qs": "^6.9.17",
+    "@types/turndown": "^5.0.5",
+    "axios": "^1.7.9",
+    "crawlee": "^3.12.1",
+    "dotenv": "^16.4.7",
+    "groq-sdk": "^0.15.0",
+    "markdown-it": "^14.1.0",
+    "openai": "^4.77.0",
+    "playwright": "^1.49.1",
+    "prisma": "^6.5.0",
+    "puppeteer": "^23.10.4",
+    "qs": "^6.13.1",
+    "reflect-metadata": "^0.2.2",
+    "sqlite3": "^5.1.7",
+    "turndown": "^7.2.0",
+    "typeorm": "^0.3.21"
+  }
+}

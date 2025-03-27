@@ -1,0 +1,28 @@
+{
+  self_id: 2314554773,
+  user_id: 1259598502,
+  time: 1742290874,
+  message_id: 352188510,
+  message_seq: 352188510,
+  real_id: 352188510,
+  real_seq: "2272",
+  message_type: "group",
+  sender: {
+    user_id: 1259598502,
+    nickname: "七庙庙",
+    card: "",
+    role: "owner",
+  },
+  raw_message: "1",
+  font: 14,
+  sub_type: "normal",
+  message: [
+    {
+      type: "text",
+      data: [Object ...],
+    }
+  ],
+  message_format: "array",
+  post_type: "message",
+  group_id: 539111851,
+}
