@@ -57,3 +57,5 @@ coverage/
 .nyc_output/
 *.pid
 *.pid.lock
+
+**/*.db

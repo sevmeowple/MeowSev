@@ -175,5 +175,5 @@ dist
 .DS_Store
 *.code-workspace
 
-*.db
+**/*.db
 *.png
