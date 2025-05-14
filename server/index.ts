@@ -1,28 +1,19 @@
-import { graphql } from '@octokit/graphql';
-import * as dotenv from 'dotenv';
+import { FastMCP } from "fastmcp"
+import * as tools from "@mcp/plugins/tools"
+const server = new FastMCP({
+    name: "MeowJiang",
+    version: "1.0.0",
+})
 
+server.addTool(
+    tools.timeToolSchema
+)
+server.addTool(
+    tools.arkToolSchema
+)
 
-dotenv.config({ path: __dirname + "/.env.local" });
-
-const GITHUB_API_KEY = process.env.GITHUB_API_KEY;
-
-const graphqlWithAuth = graphql.defaults({
-    headers: {
-      authorization: `Authorization: token ${GITHUB_API_KEY}`,
-    },
-  });
-  const { repository } = await graphqlWithAuth(`
+server.start(
     {
-      repository(owner: "octokit", name: "graphql.js") {
-        issues(last: 3) {
-          edges {
-            node {
-              title
-            }
-          }
-        }
-      }
+        transportType: "stdio"
     }
-  `);
-
-console.log(repository)
+)

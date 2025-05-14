@@ -10,6 +10,19 @@ class PRTSService {
       content: path,
     };
   }
+
+  async tagGacha(tags: string[]): Promise<BotResponse> {
+    const result = await prts.tagGacha(tags);
+    // 组合结果以" * "分隔
+    let response = result.join(" * ");
+    if(!response)
+      response = "未找到匹配干员";
+    // console.log("response", response);
+    return {
+      type: "quote",
+      content: response,
+    };
+  }
 }
 
 class Ark_Service {
@@ -20,6 +33,8 @@ class Ark_Service {
       content: random,
     };
   }
+
+
 }
 
 class ArkService {

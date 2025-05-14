@@ -1,0 +1,21 @@
+[MarkdownToImage] Base path: /home/sevmeowple/WorkSpace/Happy/MeowSev/server
+Database connection established successfully
+WebSocket connection opened
+{
+  [0mtime[2m:[0m [0m[33m1745265970[0m[0m[2m,[0m
+  [0mself_id[2m:[0m [0m[33m2314554773[0m[0m[2m,[0m
+  [0mpost_type[2m:[0m [0m[32m[0m[32m"meta_event"[0m[0m[0m[2m,[0m
+  [0mmeta_event_type[2m:[0m [0m[32m[0m[32m"lifecycle"[0m[0m[0m[2m,[0m
+  [0msub_type[2m:[0m [0m[32m[0m[32m"connect"[0m[0m[0m[2m,[0m
+}
+{
+  [0mtime[2m:[0m [0m[33m1745265973[0m[0m[2m,[0m
+  [0mself_id[2m:[0m [0m[33m2314554773[0m[0m[2m,[0m
+  [0mpost_type[2m:[0m [0m[32m[0m[32m"meta_event"[0m[0m[0m[2m,[0m
+  [0mmeta_event_type[2m:[0m [0m[32m[0m[32m"heartbeat"[0m[0m[0m[2m,[0m
+  [0mstatus[2m:[0m {
+    [0monline[2m:[0m [0m[33mtrue[0m[0m[2m,[0m
+    [0mgood[2m:[0m [0m[33mtrue[0m[0m[2m,[0m
+  }[0m[2m,[0m
+  [0minterval[2m:[0m [0m[33m30000[0m[0m[2m,[0m
+}

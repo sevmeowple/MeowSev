@@ -31,6 +31,21 @@ class ArkController {
       headers: { "Content-Type": "application/json" },
     });
   }
+
+  async tagGacha(req: Request) {
+    const body = await req.json();
+    const tags = body.tags;
+
+    if (!tags) {
+      return new Response("Tags not found", { status: 400 });
+    }
+
+    const result = await arknights.prts.tagGacha(tags);
+
+    return new Response(JSON.stringify(result), {
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 }
 
 export { ArkController };

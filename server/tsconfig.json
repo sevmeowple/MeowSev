@@ -31,7 +31,8 @@
       "@data/*": ["data/*"],
       "@web/*": ["web/*"],
       "@/*": ["*"],
-      "@plugin/*": ["plugin/*"]
+      "@plugin/*": ["plugin/*"],
+      "@mcp/*": ["mcp/*"],
     },
 
     "experimentalDecorators": true,

@@ -4,11 +4,13 @@ import { messageProcess } from "@utils/message";
 
 import { router } from "@web/router";
 import { errorHandler } from "@web/middleware";
+
 import { AIController, ArkController, HomeController } from "@web/controllers";
 import { ToolerController } from "@web/controllers/toolerController";
 import { USTCController } from "@web/controllers/ustcController";
 import { FomeowController } from "@web/controllers/fomeowController";
 import { BarController } from "@web/controllers/barController";
+import { MCPController } from "@web/controllers/mcpController";
 
 const homeController = new HomeController();
 const arkController = new ArkController();
@@ -17,13 +19,14 @@ const toolerController = new ToolerController();
 const ustcController = new USTCController();
 const fomeowController = new FomeowController();
 const barController = new BarController();
-
+const mcpController = new MCPController();
 
 router.get("/", homeController.index);
 router.post("/ark/search", arkController.search);
 router.post("/ark/randomdice", arkController.randomdice);
+router.post("/ark/tagGacha", arkController.tagGacha);
 
-router.post("/ai/chat", aiController.chat);
+router.post("/ai/chat", mcpController.chat);
 router.post("/ai/chat_with_group", aiController.chat_with_group);
 router.post("/ai/chat_R1", aiController.chat_R1);
 router.post("/ai/chatARK", aiController.chatARK);

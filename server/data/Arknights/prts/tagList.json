@@ -1,0 +1,1316 @@
+{
+  "夜刀": {
+    "name": "夜刀",
+    "profession": "先锋",
+    "tagList": [
+      "新手"
+    ],
+    "rarity": 1,
+    "position": "近战位"
+  },
+  "芬": {
+    "name": "芬",
+    "profession": "先锋",
+    "tagList": [
+      "费用回复"
+    ],
+    "rarity": 2,
+    "position": "近战位"
+  },
+  "香草": {
+    "name": "香草",
+    "profession": "先锋",
+    "tagList": [
+      "费用回复"
+    ],
+    "rarity": 2,
+    "position": "近战位"
+  },
+  "翎羽": {
+    "name": "翎羽",
+    "profession": "先锋",
+    "tagList": [
+      "输出 费用回复"
+    ],
+    "rarity": 2,
+    "position": "近战位"
+  },
+  "桃金娘": {
+    "name": "桃金娘",
+    "profession": "先锋",
+    "tagList": [
+      "费用回复 治疗"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "清道夫": {
+    "name": "清道夫",
+    "profession": "先锋",
+    "tagList": [
+      "费用回复 输出"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "红豆": {
+    "name": "红豆",
+    "profession": "先锋",
+    "tagList": [
+      "输出 费用回复"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "德克萨斯": {
+    "name": "德克萨斯",
+    "profession": "先锋",
+    "tagList": [
+      "费用回复 控场"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "凛冬": {
+    "name": "凛冬",
+    "profession": "先锋",
+    "tagList": [
+      "费用回复 支援"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "极境": {
+    "name": "极境",
+    "profession": "先锋",
+    "tagList": [
+      "费用回复 支援"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "苇草": {
+    "name": "苇草",
+    "profession": "先锋",
+    "tagList": [
+      "费用回复 输出"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "贾维": {
+    "name": "贾维",
+    "profession": "先锋",
+    "tagList": [
+      "费用回复 输出"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "推进之王": {
+    "name": "推进之王",
+    "profession": "先锋",
+    "tagList": [
+      "费用回复 输出"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "风笛": {
+    "name": "风笛",
+    "profession": "先锋",
+    "tagList": [
+      "费用回复 输出"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "豆苗": {
+    "name": "豆苗",
+    "profession": "先锋",
+    "tagList": [
+      "费用回复 召唤"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "Lancet-2": {
+    "name": "Lancet-2",
+    "profession": "医疗",
+    "tagList": [
+      "支援机械 治疗"
+    ],
+    "rarity": 0,
+    "position": "远程位"
+  },
+  "安赛尔": {
+    "name": "安赛尔",
+    "profession": "医疗",
+    "tagList": [
+      "治疗"
+    ],
+    "rarity": 2,
+    "position": "远程位"
+  },
+  "芙蓉": {
+    "name": "芙蓉",
+    "profession": "医疗",
+    "tagList": [
+      "治疗"
+    ],
+    "rarity": 2,
+    "position": "远程位"
+  },
+  "末药": {
+    "name": "末药",
+    "profession": "医疗",
+    "tagList": [
+      "治疗"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "苏苏洛": {
+    "name": "苏苏洛",
+    "profession": "医疗",
+    "tagList": [
+      "治疗"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "调香师": {
+    "name": "调香师",
+    "profession": "医疗",
+    "tagList": [
+      "治疗"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "清流": {
+    "name": "清流",
+    "profession": "医疗",
+    "tagList": [
+      "治疗 支援"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "絮雨": {
+    "name": "絮雨",
+    "profession": "医疗",
+    "tagList": [
+      "治疗"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "赫默": {
+    "name": "赫默",
+    "profession": "医疗",
+    "tagList": [
+      "治疗"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "华法琳": {
+    "name": "华法琳",
+    "profession": "医疗",
+    "tagList": [
+      "治疗 支援"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "白面鸮": {
+    "name": "白面鸮",
+    "profession": "医疗",
+    "tagList": [
+      "治疗 支援"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "夜莺": {
+    "name": "夜莺",
+    "profession": "医疗",
+    "tagList": [
+      "治疗 支援"
+    ],
+    "rarity": 5,
+    "position": "远程位"
+  },
+  "闪灵": {
+    "name": "闪灵",
+    "profession": "医疗",
+    "tagList": [
+      "治疗 支援"
+    ],
+    "rarity": 5,
+    "position": "远程位"
+  },
+  "12F": {
+    "name": "12F",
+    "profession": "术师",
+    "tagList": [
+      "新手"
+    ],
+    "rarity": 1,
+    "position": "远程位"
+  },
+  "杜林": {
+    "name": "杜林",
+    "profession": "术师",
+    "tagList": [
+      "新手"
+    ],
+    "rarity": 1,
+    "position": "远程位"
+  },
+  "炎熔": {
+    "name": "炎熔",
+    "profession": "术师",
+    "tagList": [
+      "群攻"
+    ],
+    "rarity": 2,
+    "position": "远程位"
+  },
+  "史都华德": {
+    "name": "史都华德",
+    "profession": "术师",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 2,
+    "position": "远程位"
+  },
+  "远山": {
+    "name": "远山",
+    "profession": "术师",
+    "tagList": [
+      "群攻"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "格雷伊": {
+    "name": "格雷伊",
+    "profession": "术师",
+    "tagList": [
+      "群攻 减速"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "夜烟": {
+    "name": "夜烟",
+    "profession": "术师",
+    "tagList": [
+      "输出 削弱"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "卡达": {
+    "name": "卡达",
+    "profession": "术师",
+    "tagList": [
+      "输出 控场"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "莱恩哈特": {
+    "name": "莱恩哈特",
+    "profession": "术师",
+    "tagList": [
+      "群攻 爆发"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "蜜蜡": {
+    "name": "蜜蜡",
+    "profession": "术师",
+    "tagList": [
+      "群攻 防护"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "惊蛰": {
+    "name": "惊蛰",
+    "profession": "术师",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "爱丽丝": {
+    "name": "爱丽丝",
+    "profession": "术师",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "夜魔": {
+    "name": "夜魔",
+    "profession": "术师",
+    "tagList": [
+      "输出 治疗 减速"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "伊芙利特": {
+    "name": "伊芙利特",
+    "profession": "术师",
+    "tagList": [
+      "群攻 削弱"
+    ],
+    "rarity": 5,
+    "position": "远程位"
+  },
+  "莫斯提马": {
+    "name": "莫斯提马",
+    "profession": "术师",
+    "tagList": [
+      "群攻 支援 控场"
+    ],
+    "rarity": 5,
+    "position": "远程位"
+  },
+  "刻俄柏": {
+    "name": "刻俄柏",
+    "profession": "术师",
+    "tagList": [
+      "输出 控场"
+    ],
+    "rarity": 5,
+    "position": "远程位"
+  },
+  "THRM-EX": {
+    "name": "THRM-EX",
+    "profession": "特种",
+    "tagList": [
+      "支援机械 爆发"
+    ],
+    "rarity": 0,
+    "position": "近战位"
+  },
+  "暗索": {
+    "name": "暗索",
+    "profession": "特种",
+    "tagList": [
+      "位移"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "阿消": {
+    "name": "阿消",
+    "profession": "特种",
+    "tagList": [
+      "位移"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "孑": {
+    "name": "孑",
+    "profession": "特种",
+    "tagList": [
+      "快速复活 输出"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "砾": {
+    "name": "砾",
+    "profession": "特种",
+    "tagList": [
+      "快速复活 防护"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "食铁兽": {
+    "name": "食铁兽",
+    "profession": "特种",
+    "tagList": [
+      "位移 减速"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "崖心": {
+    "name": "崖心",
+    "profession": "特种",
+    "tagList": [
+      "位移 输出"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "槐琥": {
+    "name": "槐琥",
+    "profession": "特种",
+    "tagList": [
+      "快速复活 削弱"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "卡夫卡": {
+    "name": "卡夫卡",
+    "profession": "特种",
+    "tagList": [
+      "快速复活 控场"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "红": {
+    "name": "红",
+    "profession": "特种",
+    "tagList": [
+      "快速复活 控场"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "狮蝎": {
+    "name": "狮蝎",
+    "profession": "特种",
+    "tagList": [
+      "输出 生存"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "温蒂": {
+    "name": "温蒂",
+    "profession": "特种",
+    "tagList": [
+      "位移 输出 控场"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "傀影": {
+    "name": "傀影",
+    "profession": "特种",
+    "tagList": [
+      "快速复活 控场 输出"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "阿": {
+    "name": "阿",
+    "profession": "特种",
+    "tagList": [
+      "支援 输出"
+    ],
+    "rarity": 5,
+    "position": "远程位"
+  },
+  "正义骑士号": {
+    "name": "正义骑士号",
+    "profession": "狙击",
+    "tagList": [
+      "支援机械 支援"
+    ],
+    "rarity": 0,
+    "position": "远程位"
+  },
+  "巡林者": {
+    "name": "巡林者",
+    "profession": "狙击",
+    "tagList": [
+      "新手"
+    ],
+    "rarity": 1,
+    "position": "远程位"
+  },
+  "空爆": {
+    "name": "空爆",
+    "profession": "狙击",
+    "tagList": [
+      "群攻"
+    ],
+    "rarity": 2,
+    "position": "远程位"
+  },
+  "克洛丝": {
+    "name": "克洛丝",
+    "profession": "狙击",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 2,
+    "position": "远程位"
+  },
+  "安德切尔": {
+    "name": "安德切尔",
+    "profession": "狙击",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 2,
+    "position": "远程位"
+  },
+  "白雪": {
+    "name": "白雪",
+    "profession": "狙击",
+    "tagList": [
+      "群攻 减速"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "松果": {
+    "name": "松果",
+    "profession": "狙击",
+    "tagList": [
+      "群攻 输出"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "红云": {
+    "name": "红云",
+    "profession": "狙击",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "酸糖": {
+    "name": "酸糖",
+    "profession": "狙击",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "安比尔": {
+    "name": "安比尔",
+    "profession": "狙击",
+    "tagList": [
+      "输出 减速"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "梅": {
+    "name": "梅",
+    "profession": "狙击",
+    "tagList": [
+      "输出 减速"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "流星": {
+    "name": "流星",
+    "profession": "狙击",
+    "tagList": [
+      "输出 削弱"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "杰西卡": {
+    "name": "杰西卡",
+    "profession": "狙击",
+    "tagList": [
+      "输出 生存"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "奥斯塔": {
+    "name": "奥斯塔",
+    "profession": "狙击",
+    "tagList": [
+      "群攻"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "送葬人": {
+    "name": "送葬人",
+    "profession": "狙击",
+    "tagList": [
+      "群攻"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "慑砂": {
+    "name": "慑砂",
+    "profession": "狙击",
+    "tagList": [
+      "群攻 削弱"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "陨星": {
+    "name": "陨星",
+    "profession": "狙击",
+    "tagList": [
+      "群攻 削弱"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "四月": {
+    "name": "四月",
+    "profession": "狙击",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "普罗旺斯": {
+    "name": "普罗旺斯",
+    "profession": "狙击",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "灰喉": {
+    "name": "灰喉",
+    "profession": "狙击",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "白金": {
+    "name": "白金",
+    "profession": "狙击",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "蓝毒": {
+    "name": "蓝毒",
+    "profession": "狙击",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "安哲拉": {
+    "name": "安哲拉",
+    "profession": "狙击",
+    "tagList": [
+      "输出 减速"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "守林人": {
+    "name": "守林人",
+    "profession": "狙击",
+    "tagList": [
+      "输出 爆发"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "空弦": {
+    "name": "空弦",
+    "profession": "狙击",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 5,
+    "position": "远程位"
+  },
+  "能天使": {
+    "name": "能天使",
+    "profession": "狙击",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 5,
+    "position": "远程位"
+  },
+  "黑": {
+    "name": "黑",
+    "profession": "狙击",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 5,
+    "position": "远程位"
+  },
+  "早露": {
+    "name": "早露",
+    "profession": "狙击",
+    "tagList": [
+      "输出 控场"
+    ],
+    "rarity": 5,
+    "position": "远程位"
+  },
+  "PhonoR-0": {
+    "name": "PhonoR-0",
+    "profession": "辅助",
+    "tagList": [
+      "支援机械 元素"
+    ],
+    "rarity": 0,
+    "position": "远程位"
+  },
+  "梓兰": {
+    "name": "梓兰",
+    "profession": "辅助",
+    "tagList": [
+      "减速"
+    ],
+    "rarity": 2,
+    "position": "远程位"
+  },
+  "地灵": {
+    "name": "地灵",
+    "profession": "辅助",
+    "tagList": [
+      "减速"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "波登可": {
+    "name": "波登可",
+    "profession": "辅助",
+    "tagList": [
+      "减速 治疗"
+    ],
+    "rarity": 3,
+    "position": "远程位"
+  },
+  "格劳克斯": {
+    "name": "格劳克斯",
+    "profession": "辅助",
+    "tagList": [
+      "减速 控场"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "真理": {
+    "name": "真理",
+    "profession": "辅助",
+    "tagList": [
+      "减速 输出"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "初雪": {
+    "name": "初雪",
+    "profession": "辅助",
+    "tagList": [
+      "削弱"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "巫恋": {
+    "name": "巫恋",
+    "profession": "辅助",
+    "tagList": [
+      "削弱"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "梅尔": {
+    "name": "梅尔",
+    "profession": "辅助",
+    "tagList": [
+      "召唤 控场"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "月禾": {
+    "name": "月禾",
+    "profession": "辅助",
+    "tagList": [
+      "支援 生存"
+    ],
+    "rarity": 4,
+    "position": "远程位"
+  },
+  "铃兰": {
+    "name": "铃兰",
+    "profession": "辅助",
+    "tagList": [
+      "减速 支援 输出"
+    ],
+    "rarity": 5,
+    "position": "远程位"
+  },
+  "麦哲伦": {
+    "name": "麦哲伦",
+    "profession": "辅助",
+    "tagList": [
+      "支援 减速 输出"
+    ],
+    "rarity": 5,
+    "position": "远程位"
+  },
+  "Castle-3": {
+    "name": "Castle-3",
+    "profession": "近卫",
+    "tagList": [
+      "支援机械 支援"
+    ],
+    "rarity": 0,
+    "position": "近战位"
+  },
+  "泡普卡": {
+    "name": "泡普卡",
+    "profession": "近卫",
+    "tagList": [
+      "群攻 生存"
+    ],
+    "rarity": 2,
+    "position": "近战位"
+  },
+  "月见夜": {
+    "name": "月见夜",
+    "profession": "近卫",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 2,
+    "position": "近战位"
+  },
+  "玫兰莎": {
+    "name": "玫兰莎",
+    "profession": "近卫",
+    "tagList": [
+      "输出 生存"
+    ],
+    "rarity": 2,
+    "position": "近战位"
+  },
+  "霜叶": {
+    "name": "霜叶",
+    "profession": "近卫",
+    "tagList": [
+      "减速 输出"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "刻刀": {
+    "name": "刻刀",
+    "profession": "近卫",
+    "tagList": [
+      "爆发 输出"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "缠丸": {
+    "name": "缠丸",
+    "profession": "近卫",
+    "tagList": [
+      "生存 输出"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "艾丝黛尔": {
+    "name": "艾丝黛尔",
+    "profession": "近卫",
+    "tagList": [
+      "群攻 生存"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "慕斯": {
+    "name": "慕斯",
+    "profession": "近卫",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "杰克": {
+    "name": "杰克",
+    "profession": "近卫",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "猎蜂": {
+    "name": "猎蜂",
+    "profession": "近卫",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "芳汀": {
+    "name": "芳汀",
+    "profession": "近卫",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "杜宾": {
+    "name": "杜宾",
+    "profession": "近卫",
+    "tagList": [
+      "输出 支援"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "宴": {
+    "name": "宴",
+    "profession": "近卫",
+    "tagList": [
+      "输出 生存"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "布洛卡": {
+    "name": "布洛卡",
+    "profession": "近卫",
+    "tagList": [
+      "群攻 生存"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "幽灵鲨": {
+    "name": "幽灵鲨",
+    "profession": "近卫",
+    "tagList": [
+      "群攻 生存"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "燧石": {
+    "name": "燧石",
+    "profession": "近卫",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "诗怀雅": {
+    "name": "诗怀雅",
+    "profession": "近卫",
+    "tagList": [
+      "输出 支援"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "因陀罗": {
+    "name": "因陀罗",
+    "profession": "近卫",
+    "tagList": [
+      "输出 生存"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "断崖": {
+    "name": "断崖",
+    "profession": "近卫",
+    "tagList": [
+      "输出 群攻"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "星极": {
+    "name": "星极",
+    "profession": "近卫",
+    "tagList": [
+      "输出 防护"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "陈": {
+    "name": "陈",
+    "profession": "近卫",
+    "tagList": [
+      "爆发 输出"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "史尔特尔": {
+    "name": "史尔特尔",
+    "profession": "近卫",
+    "tagList": [
+      "输出"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "银灰": {
+    "name": "银灰",
+    "profession": "近卫",
+    "tagList": [
+      "输出 支援"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "山": {
+    "name": "山",
+    "profession": "近卫",
+    "tagList": [
+      "输出 生存"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "斯卡蒂": {
+    "name": "斯卡蒂",
+    "profession": "近卫",
+    "tagList": [
+      "输出 生存"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "煌": {
+    "name": "煌",
+    "profession": "近卫",
+    "tagList": [
+      "输出 生存"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "赫拉格": {
+    "name": "赫拉格",
+    "profession": "近卫",
+    "tagList": [
+      "输出 生存"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "棘刺": {
+    "name": "棘刺",
+    "profession": "近卫",
+    "tagList": [
+      "输出 防护"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "Friston-3": {
+    "name": "Friston-3",
+    "profession": "重装",
+    "tagList": [
+      "支援机械 防护"
+    ],
+    "rarity": 0,
+    "position": "近战位"
+  },
+  "黑角": {
+    "name": "黑角",
+    "profession": "重装",
+    "tagList": [
+      "新手"
+    ],
+    "rarity": 1,
+    "position": "近战位"
+  },
+  "米格鲁": {
+    "name": "米格鲁",
+    "profession": "重装",
+    "tagList": [
+      "防护"
+    ],
+    "rarity": 2,
+    "position": "近战位"
+  },
+  "斑点": {
+    "name": "斑点",
+    "profession": "重装",
+    "tagList": [
+      "防护 治疗"
+    ],
+    "rarity": 2,
+    "position": "近战位"
+  },
+  "泡泡": {
+    "name": "泡泡",
+    "profession": "重装",
+    "tagList": [
+      "防护"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "蛇屠箱": {
+    "name": "蛇屠箱",
+    "profession": "重装",
+    "tagList": [
+      "防护"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "角峰": {
+    "name": "角峰",
+    "profession": "重装",
+    "tagList": [
+      "防护"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "古米": {
+    "name": "古米",
+    "profession": "重装",
+    "tagList": [
+      "防护 治疗"
+    ],
+    "rarity": 3,
+    "position": "近战位"
+  },
+  "火神": {
+    "name": "火神",
+    "profession": "重装",
+    "tagList": [
+      "生存 防护 输出"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "可颂": {
+    "name": "可颂",
+    "profession": "重装",
+    "tagList": [
+      "防护 位移"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "临光": {
+    "name": "临光",
+    "profession": "重装",
+    "tagList": [
+      "防护 治疗"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "吽": {
+    "name": "吽",
+    "profession": "重装",
+    "tagList": [
+      "防护 治疗"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "石棉": {
+    "name": "石棉",
+    "profession": "重装",
+    "tagList": [
+      "防护 输出"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "雷蛇": {
+    "name": "雷蛇",
+    "profession": "重装",
+    "tagList": [
+      "防护 输出"
+    ],
+    "rarity": 4,
+    "position": "近战位"
+  },
+  "泥岩": {
+    "name": "泥岩",
+    "profession": "重装",
+    "tagList": [
+      "生存 防护 输出"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "森蚺": {
+    "name": "森蚺",
+    "profession": "重装",
+    "tagList": [
+      "输出 生存 防护"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "塞雷娅": {
+    "name": "塞雷娅",
+    "profession": "重装",
+    "tagList": [
+      "防护 治疗 支援"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "瑕光": {
+    "name": "瑕光",
+    "profession": "重装",
+    "tagList": [
+      "防护 治疗 输出"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  },
+  "星熊": {
+    "name": "星熊",
+    "profession": "重装",
+    "tagList": [
+      "防护 输出"
+    ],
+    "rarity": 5,
+    "position": "近战位"
+  }
+}
