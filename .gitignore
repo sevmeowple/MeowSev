@@ -59,3 +59,11 @@ coverage/
 *.pid.lock
 
 **/*.db
+
+# 日志
+*.log
+*.txt
+
+# docker
+# qdrant
+**/qdrant_storage/

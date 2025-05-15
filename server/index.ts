@@ -11,7 +11,12 @@ server.addTool(
 server.addTool(
     tools.arkToolSchema
 )
-
+server.addTool(
+    tools.webSearchToolSchema
+)
+server.addTool(
+    tools.githubToolSchema
+)
 server.start(
     {
         transportType: "stdio"

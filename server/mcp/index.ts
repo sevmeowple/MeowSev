@@ -5,6 +5,7 @@ import {
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import readline from "readline/promises";
 import dotenv from "dotenv";
+import { M3LogWrapper } from "@utils/m3log";
 
 dotenv.config();
 
@@ -36,18 +37,27 @@ const systemPrompt = `
 
 喵~ 这是您问题的答案：
 
-## 核心内容
 [简洁明了的回答主体]
 [如需必要的补充信息]
+### TOOL Infos
+注意:应该在隐藏关于时间问题中时刻注意时间,例如时间比对
 `
 
 class Conversation {
     private messages: any[] = [];
-
-    constructor(private client: MCPClient) { 
+    private logger = new M3LogWrapper(["Conversation"], false, true);
+    constructor(private client: MCPClient) {
         this.messages.push({
             role: "system",
-            content: systemPrompt
+            content: systemPrompt + `\n今天是 ${new Date().toLocaleDateString()}`
+        });
+    }
+
+    // 添加系统消息的方法
+    addSystemMessage(content: string): void {
+        this.messages.push({
+            role: "system",
+            content
         });
     }
 
@@ -85,6 +95,7 @@ class Conversation {
 
             // 处理工具调用
             if (responseMessage.tool_calls && responseMessage.tool_calls.length > 0) {
+                console.log(`${responseMessage.tool_calls.map(toolCall => toolCall.function.name).join(", ")} tools called`);
                 for (const toolCall of responseMessage.tool_calls) {
                     try {
                         const toolName = toolCall.function.name;
@@ -101,8 +112,8 @@ class Conversation {
                         console.log(`Calling tool ${toolName}...`);
 
                         const result = await this.client.callTool(toolName, toolArgs);
-                        console.log(`Tool ${toolName} returned:`, result);
-
+                        console.log(`Tool ${toolName} returned check file for details`);
+                        this.logger.info(`Tool ${toolName} returned, ${result}`);
                         // 将工具结果添加到消息中
                         this.messages.push({
                             role: "tool",
@@ -153,6 +164,15 @@ class MCPClient {
     private transport: StdioClientTransport | null = null;
     private tools: any[] = [];
 
+    private toolPrompt = `
+    你是工具选择和执行专家。分析用户查询并决定是否需要使用工具。
+    仅关注工具选择、参数准备和结果解析。
+    不要生成对用户的回复，只执行必要的工具调用。
+    `;
+
+    private chatPrompt = systemPrompt; // 现有的猫娘风格提示词
+
+
     constructor() {
         this.openai = new OpenAI({
             baseURL: "https://api.deepseek.com",
@@ -160,6 +180,8 @@ class MCPClient {
         });
         this.mcp = new Client({ name: "mcp-client-cli", version: "1.0.0" });
     }
+
+
 
     getModel(): string {
         return model;

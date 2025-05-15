@@ -3,10 +3,13 @@ import { browserManager } from "@utils/browser";
 import type { Tool, ToolParameters } from "fastmcp";
 import { type } from "arktype";
 import { string } from "arktype/internal/keywords/string.ts";
+import { M3LogWrapper } from "@utils/m3log";
 // https://wiki.biligame.com/arknights/%E8%95%BE%E7%BC%AA%E5%AE%89
 class ArkTool {
+    logger: M3LogWrapper = new M3LogWrapper(["ArkTool"], false, true);
     baseurl = "https://wiki.biligame.com/arknights/";
     async getCharInfo(char: string): Promise<string> {
+        this.logger.debug(`获取信息: ${char}`);
         const browser = await browserManager.getBrowser();
         const page = await browser.newPage();
         await page.goto(
@@ -19,7 +22,9 @@ class ArkTool {
         const searchResults = await page.$("#mw-content-text");
         const element = searchResults || (await page.$("#mw-content-text"));
         if (!element) {
-            throw new Error("No content element found");
+            this.logger.error("没有找到搜索结果");
+            page.close();
+            return "没有找到搜索结果";
         }
         let html: string = "";
         if (element) {
@@ -36,12 +41,12 @@ class ArkTool {
 const arkTool = new ArkTool();
 const arkToolSchema: Tool<undefined, ToolParameters> = {
     name: "arknights",
-    description: "Get Arknights character info",
+    description: "获取明日方舟角色、干员、活动等相关信息。请提供准确的中文名称。",
     parameters: type({
-        char: "string",
+        keyword: "string",
     }),
     execute: async (args: any) => {
-        return arkTool.getCharInfo(args.char);
+        return arkTool.getCharInfo(args.keyword);
     }
 };
 
