@@ -9,7 +9,7 @@ server.addTool(
     tools.timeToolSchema
 )
 server.addTool(
-    tools.arkToolSchema
+    tools.arkMemoSchema
 )
 server.addTool(
     tools.webSearchToolSchema
@@ -17,6 +17,9 @@ server.addTool(
 server.addTool(
     tools.githubToolSchema
 )
+// server.addTool(
+//     tools.arkMemoMainStorySchema
+// )
 server.start(
     {
         transportType: "stdio"

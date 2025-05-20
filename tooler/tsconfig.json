@@ -27,7 +27,8 @@
     "baseUrl": ".",
 
     "paths": {
-      "@plugin/*": ["plugin/"]
+      "@plugin/*": ["plugin/"],
+      "@utils/*": ["utils/"],
     }
   }
 }

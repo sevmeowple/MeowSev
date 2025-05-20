@@ -14,6 +14,7 @@
     "@modelcontextprotocol/sdk": "^1.11.2",
     "@octokit/graphql": "^8.2.2",
     "@prisma/client": "^6.7.0",
+    "@qdrant/js-client-rest": "^1.14.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/markdown-it": "^14.1.2",
     "@types/qs": "^6.9.18",

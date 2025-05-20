@@ -36,6 +36,7 @@ dist/
 build/
 out/
 .svelte-kit/
+**/output/
 
 # IDE 相关
 .idea/

@@ -177,3 +177,5 @@ dist
 
 **/*.db
 *.png
+
+**/.embedding_cache

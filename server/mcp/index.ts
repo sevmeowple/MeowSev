@@ -6,7 +6,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 import readline from "readline/promises";
 import dotenv from "dotenv";
 import { M3LogWrapper } from "@utils/m3log";
-
+import * as path from "path";
 dotenv.config();
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -14,7 +14,10 @@ if (!OPENAI_API_KEY) {
     throw new Error("OPENAI_API_KEY is not set");
 }
 const model = 'deepseek-chat'
-const path = "/home/sevmeowple/WorkSpace/Happy/MeowSev/server/index.ts"
+// 组合上一级目录的路径
+const _path = "../index.ts"
+const path_ = path.resolve(__dirname, _path);
+
 
 const systemPrompt = `
 # 简约助手 + 猫娘风格指导 Prompt
@@ -419,5 +422,5 @@ class MCPClient {
 }
 
 const mcpClient = new MCPClient();
-mcpClient.connectToServer(path)
+mcpClient.connectToServer(path_)
 export { mcpClient };
