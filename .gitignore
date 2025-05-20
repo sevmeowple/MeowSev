@@ -68,3 +68,5 @@ coverage/
 # docker
 # qdrant
 **/qdrant_storage/
+
+ArknightsGameData/**
