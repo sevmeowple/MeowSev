@@ -1,0 +1,10 @@
+port = 6040
+[database]
+enableWAL = true
+path = "./data/app.db"
+timeout = 5000
+
+[ai]
+apiKey = "openrouter-api-key" # 替换为你的 OpenRouter API Key
+baseURL = "https://openrouter.ai/api/v1" # 这个url随便填,因为用的sdk,只是懒得删config里面对应的验证
+modelID = "moonshotai/kimi-k2"
