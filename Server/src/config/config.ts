@@ -9,6 +9,7 @@ import Database from "bun:sqlite";
 
 import config from "../../config.toml"
 import { weatherTool } from "./AI/plugins/weather";
+import { picTool } from "./AI/plugins/pic";
 
 export const AppConfigSchema = z.object({
   port: z.number().default(6040),
@@ -31,6 +32,7 @@ export function CreateConfigUnion(AppConfig: AppConfig): ConfigUnionType {
   const aiClient = createAISDKClient(AppConfig.ai);
 
   aiClient.registerTool(weatherTool);
+  aiClient.registerTool(picTool)
 
   return {
     app: AppConfig,

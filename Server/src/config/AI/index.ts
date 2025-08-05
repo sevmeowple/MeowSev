@@ -1,21 +1,31 @@
 import { generateText, streamText, tool } from 'ai';
 import { createOpenRouter } from "@openrouter/ai-sdk-provider"
+import { createOpenAI } from '@ai-sdk/openai';
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { z } from 'zod';
-import type { CallSettings, GenerateTextResult, LanguageModel, StreamTextResult } from 'ai';
+import type { CallSettings, GenerateTextResult, ImagePart, LanguageModel, ModelMessage, StreamTextResult, TextPart, UserContent } from 'ai';
 import { MessageObject } from '@/utils/message';
 // AI 配置 Schema
 export const AIConfigSchema = z.object({
     baseURL: z.url(),
     apiKey: z.string().min(1, "API Key 不能为空"),
-    modelID: z.string().default("gpt-3.5-turbo")
+    modelID: z.string().default("gpt-3.5-turbo"),
+    viewmodelID: z.string().default("google/gemini-2.5-flash"),
+    openai: z.object({
+        apiKey: z.string().optional(),
+        modelID: z.string().default("gpt-3.5-turbo"),
+        baseURL: z.string().default("https://api.openai.com/v1")
+    }).optional()
 });
 
 export type AIConfig = z.infer<typeof AIConfigSchema>;
 
-export interface ChatMessage {
-    role: 'system' | 'user' | 'assistant';
-    content: string;
-}
+// export interface ChatMessage {
+//     role: 'system' | 'user' | 'assistant';
+//     content: string | UserContent;
+// }
+
+export type ChatMessage = ModelMessage;
 
 export interface ToolDefinition {
     name: string;
@@ -26,6 +36,8 @@ export interface ToolDefinition {
 
 export type ToolResult = {
     success: true;
+    responseType: 'text' | 'image';
+    resUrl?: string;
     aiResponse: string;
     userMessages?: MessageObject[];
 } | {
@@ -36,6 +48,8 @@ export type ToolResult = {
 
 export class AIClientSDK {
     private model: LanguageModel;
+    private modelalt: LanguageModel;
+    private viewmodel: LanguageModel;
     private context: ChatMessage[] = [];
     private tools: Record<string, ToolDefinition> = {};
 
@@ -43,6 +57,18 @@ export class AIClientSDK {
         this.model = createOpenRouter({
             apiKey: config.apiKey,
         })(config.modelID || 'gpt-3.5-turbo');
+        this.viewmodel = createOpenRouter({
+            apiKey: config.apiKey,
+        })(config.viewmodelID || 'google/gemini-2.5-flash');
+        if (config.openai) {
+            this.modelalt = createOpenAICompatible({
+                name: "kimi",
+                apiKey: config.openai.apiKey,
+                baseURL: config.openai.baseURL,
+            })(config.openai.modelID || 'gpt-3.5-turbo');
+        } else {
+            this.modelalt = this.model; // 如果没有配置 OpenAI，则使用默认模型
+        }
     }
 
     debugTools(): void {
@@ -92,14 +118,27 @@ export class AIClientSDK {
         return toolsForAI;
     }
 
+
     async chat(
         message: string,
         enableTools: boolean = true
     ): Promise<MessageObject[]> {
+
+        const executeWithFallback = async (options: any) => {
+            try {
+                // 首先尝试主模型
+                return await generateText({ ...options, model: this.model });
+            } catch (error) {
+                console.warn('主模型连接失败，尝试备用模型:', error);
+                // 失败时使用备用模型
+                return await generateText({ ...options, model: this.modelalt });
+            }
+        };
         try {
             this.addContext('user', message);
             const allUserMessages: MessageObject[] = [];
-            let toolResponses: string[] = []; // 收集工具返回的 aiResponse
+            let toolResponses: string[] = [];
+            let imageResponses: { url: string; description: string }[] = [];
 
             const baseOptions = {
                 model: this.model,
@@ -108,10 +147,9 @@ export class AIClientSDK {
             };
 
             let result: any;
-            let finalText: string = ''; // 用于存储最终的文本回复
+            let finalText: string = '';
 
             if (enableTools && Object.keys(this.tools).length > 0) {
-                // 包装工具执行函数
                 const wrappedTools: Record<string, any> = {};
 
                 for (const [name, toolDef] of Object.entries(this.tools)) {
@@ -122,82 +160,107 @@ export class AIClientSDK {
                             console.log(`🔧 执行工具: ${name}`, params);
                             const toolResult = await toolDef.execute(params);
 
-                            // 收集用户消息（图片、卡片等）
                             if (toolResult.userMessages) {
                                 allUserMessages.push(...toolResult.userMessages);
                             }
 
-                            // 收集工具的 AI 响应，用于第二次生成
-                            if (toolResult.success && toolResult.aiResponse) {
-                                toolResponses.push(toolResult.aiResponse);
+                            if (toolResult.success) {
+                                if (toolResult.responseType === 'image' && toolResult.resUrl) {
+                                    imageResponses.push({
+                                        url: toolResult.resUrl,
+                                        description: toolResult.aiResponse
+                                    });
+                                } else {
+                                    toolResponses.push(toolResult.aiResponse);
+                                }
                             }
 
-                            // 处理错误
                             if (!toolResult.success && toolResult.errorInfo) {
                                 throw new Error(toolResult.errorInfo);
                             }
 
-                            // 返回给 AI SDK 的数据（用于工具调用的内部处理）
                             return toolResult.aiResponse;
                         }
                     });
                 }
 
-                // 第一次调用：让 AI 识别并执行工具
-                result = await generateText({
+                result = await executeWithFallback({
                     ...baseOptions,
                     tools: wrappedTools,
                 });
 
-                // 如果有工具被调用，使用工具返回的数据进行第二次生成
-                if (toolResponses.length > 0) {
+                if (toolResponses.length > 0 || imageResponses.length > 0) {
                     console.log('🔄 工具执行完成，基于工具数据生成最终回复');
-                    console.debug('🔄 工具响应数量:', toolResponses.length);
-                    console.debug('🔄 工具响应内容:', JSON.stringify(toolResponses, null, 2));
-                    console.debug('🔄 第一次 AI 回复:', result.text);
 
-                    // 将工具返回的数据添加到上下文
-                    const toolDataContext = toolResponses.join('\n\n');
+                    if (imageResponses.length > 0) {
+                        console.log('🖼️ 检测到图片响应，使用视觉模型处理');
 
-                    // 第二次调用：基于工具数据生成自然的回复
-                    const finalResult = await generateText({
-                        model: this.model,
-                        messages: [
-                            // { role: 'system', content: '你是一个智能助手，善于根据获取的数据为用户提供有用的分析和建议。' },
-                            // { role: 'user', content: message }, // 原始用户消息
-                            ...this.context,
+                        // 构建符合 AI SDK 类型的消息内容
+                        const userContent: UserContent = [
                             {
-                                role: 'assistant',
-                                content: `我已经获取到了相关信息：\n${toolDataContext}`
-                            },
+                                type: 'text' as const,
+                                text: message
+                            } as TextPart,
+                            ...imageResponses.map(img => ({
+                                type: 'image' as const,
+                                image: img.url
+                            } as ImagePart))
+                        ];
+
+                        // 构建视觉模型的消息 - 确保类型正确
+                        const visionMessages: ChatMessage[] = [
+                            ...this.context.slice(0, -1), // 除了最后一条用户消息的所有上下文
                             {
-                                role: 'user',
-                                content: '请基于上述信息给我一个自然、详细的分析，不要重复说要查询什么，直接分析数据内容即可。'
+                                role: 'user' as const,
+                                content: userContent
                             }
-                        ],
-                        temperature: 0.7,
-                    });
+                        ];
 
-                    // 使用第二次生成的结果作为最终文本
-                    finalText = finalResult.text;
-                    console.debug('🔄 第二次 AI 回复:', finalResult.text);
-                    console.debug('🔄 最终使用的回复:', finalText);
+                        // 使用视觉模型生成回复
+                        const visionResult = await generateText({
+                            model: this.viewmodel,
+                            messages: visionMessages,
+                            system: '你是一个智能助手，能够分析图片内容并与用户进行自然的对话。请根据用户的问题和提供的图片给出详细、有用的回答。',
+                            temperature: 0.7,
+                        });
+
+                        finalText = visionResult.text;
+                        console.log('🖼️ 视觉模型回复:', finalText);
+                    }
+                    else if (toolResponses.length > 0) {
+                        const toolDataContext = toolResponses.join('\n\n');
+
+                        const finalResult = await generateText({
+                            model: this.model,
+                            messages: [
+                                ...this.context,
+                                {
+                                    role: 'assistant',
+                                    content: `我已经获取到了相关信息：\n${toolDataContext}`
+                                },
+                                {
+                                    role: 'user',
+                                    content: '请基于上述信息给我一个自然、详细的分析，不要重复说要查询什么，直接分析数据内容即可。'
+                                }
+                            ],
+                            temperature: 0.7,
+                        });
+
+                        finalText = finalResult.text;
+                        console.log('📝 文本模型回复:', finalText);
+                    }
                 } else {
-                    // 没有工具调用，使用原始回复
                     finalText = result.text;
                 }
             } else {
-                result = await generateText(baseOptions);
+                result = await executeWithFallback(baseOptions);
                 finalText = result.text;
             }
 
-            // 添加最终文本到上下文
             this.addContext('assistant', finalText);
 
-            // 组合最终消息：AI 的最终回复 + 工具生成的消息
             const finalMessages: MessageObject[] = [];
 
-            // 添加 AI 的最终回复（基于工具数据生成的自然回复）
             if (finalText.trim()) {
                 finalMessages.push({
                     type: 'text',
@@ -205,7 +268,6 @@ export class AIClientSDK {
                 });
             }
 
-            // 添加工具生成的消息（图片、卡片等）
             finalMessages.push(...allUserMessages);
 
             return finalMessages;
@@ -213,10 +275,11 @@ export class AIClientSDK {
             console.error('AI 对话失败:', error);
             return [{
                 type: 'text',
-                content: `❌ AI 服务暂时不可用: ${error instanceof Error ? error.message : '未知错误'}`
+                content: `喵喵服务掉线了喵`
             }];
         }
     }
+
 
     // 流式对话
     async *chatStream(

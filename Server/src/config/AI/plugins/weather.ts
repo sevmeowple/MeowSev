@@ -475,6 +475,7 @@ export const weatherTool: ToolDefinition = {
             
             return {
                 success: true,
+                responseType: 'text',
                 aiResponse,
                 userMessages
             };
