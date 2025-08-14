@@ -8,7 +8,10 @@ plugins:
   group:basic:
     ~admin:lypolb: {}
     ~bind:a0dffw: {}
-    commands:kg0jwu: {}
+    commands:kg0jwu:
+      喵喵:
+        aliases:
+          meow: null
     help:6xmlv9: {}
     http:tcg3xd: {}
     ~inspect:jyg9v6: {}

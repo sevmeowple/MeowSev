@@ -347,6 +347,124 @@ export class AIClientSDK {
         }
     }
 
+    // 生成纯文本响应（无上下文，无工具）
+    async generateText(prompt: string, systemPrompt?: string): Promise<string> {
+        try {
+            const messages: ChatMessage[] = [];
+
+            if (systemPrompt) {
+                messages.push({ role: 'system', content: systemPrompt });
+            }
+            messages.push({ role: 'user', content: prompt });
+
+            const executeWithFallback = async (options: any) => {
+                try {
+                    return await generateText({ ...options, model: this.model });
+                } catch (error) {
+                    console.warn('主模型连接失败，尝试备用模型:', error);
+                    return await generateText({ ...options, model: this.modelalt });
+                }
+            };
+
+            const result = await executeWithFallback({
+                messages,
+                temperature: 0.7,
+                maxOutputTokens: 2000,
+            });
+
+            return result.text;
+        } catch (error) {
+            console.error('AI 文本生成失败:', error);
+            throw new Error('AI 服务暂时不可用');
+        }
+    }
+
+    // 生成 JSON 响应（带重试和验证）
+    async generateJsonResponse<T = any>(prompt: string, systemPrompt?: string, maxRetries: number = 3): Promise<T> {
+        let lastError: Error | null = null;
+
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                const text = await this.generateText(prompt, systemPrompt);
+
+                // 尝试解析 JSON
+                const parsed = JSON.parse(text);
+                return parsed as T;
+
+            } catch (error) {
+                lastError = error as Error;
+                console.warn(`JSON 解析失败 (尝试 ${attempt}/${maxRetries}):`, error);
+
+                if (attempt < maxRetries) {
+                    // 在重试时添加更明确的指令
+                    prompt += '\n\n请确保返回有效的 JSON 格式，不要包含任何额外的文本或解释。';
+                }
+            }
+        }
+
+        console.error('所有 JSON 生成尝试都失败了:', lastError);
+        throw new Error(`JSON 生成失败: ${lastError?.message}`);
+    }
+
+    // 结构化响应生成（带模式验证）
+    async generateStructuredResponse<T>(
+        prompt: string,
+        schema: {
+            description: string;
+            properties: Record<string, any>;
+            required?: string[];
+        },
+        systemPrompt?: string
+    ): Promise<T> {
+        const enhancedPrompt = `${prompt}
+
+请严格按照以下 JSON 模式格式回复：
+
+模式描述：${schema.description}
+
+必需字段：${schema.required?.join(', ') || '无'}
+
+JSON 格式示例：
+${JSON.stringify(schema.properties, null, 2)}
+
+请只返回符合模式的 JSON 数据，不要包含任何其他文本。`;
+
+        const enhancedSystemPrompt = `${systemPrompt || ''}
+
+你是一个严格的 JSON 响应生成器。你必须：
+1. 只返回有效的 JSON 格式
+2. 严格遵循提供的模式
+3. 不添加任何额外的解释或文本
+4. 确保所有必需字段都存在`;
+
+        return this.generateJsonResponse<T>(enhancedPrompt, enhancedSystemPrompt);
+    }
+
+    // 评估式对话（适合判断、评分等场景）
+    async evaluateWithContext(
+        context: string,
+        target: string,
+        question: string,
+        criteria: string[]
+    ): Promise<any> {
+        const prompt = `
+上下文信息：
+${context}
+
+评估目标：
+${target}
+
+评估问题：
+${question}
+
+评估标准：
+${criteria.map((c, i) => `${i + 1}. ${c}`).join('\n')}
+
+请基于上述信息进行客观评估，以 JSON 格式返回结果。`;
+
+        return this.generateJsonResponse(prompt);
+    }
+
     // 清空上下文
     clearContext(): void {
         const systemMessages = this.context.filter(msg => msg.role === 'system');

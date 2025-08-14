@@ -11,7 +11,43 @@ export class AIService {
         this.queryService = new QueryService(ConfigUnion);
     }
 
-    // 处理带上下文的 AI 对话
+    // 封装纯文本生成
+    async generateText(prompt: string, systemPrompt?: string): Promise<string> {
+        try {
+            return await this.ai.generateText(prompt, systemPrompt);
+        } catch (error) {
+            console.error('AI 文本生成失败:', error);
+            throw error;
+        }
+    }
+
+    // 封装 JSON 响应生成
+    async generateJsonResponse<T = any>(prompt: string, systemPrompt?: string): Promise<T> {
+        try {
+            return await this.ai.generateJsonResponse<T>(prompt, systemPrompt);
+        } catch (error) {
+            console.error('AI JSON 生成失败:', error);
+            throw error;
+        }
+    }
+
+    // 封装结构化响应
+    async generateStructuredResponse<T>(
+        prompt: string,
+        schema: {
+            description: string;
+            properties: Record<string, any>;
+            required?: string[];
+        },
+        systemPrompt?: string
+    ): Promise<T> {
+        try {
+            return await this.ai.generateStructuredResponse<T>(prompt, schema, systemPrompt);
+        } catch (error) {
+            console.error('AI 结构化响应生成失败:', error);
+            throw error;
+        }
+    }
     // 处理带上下文的 AI 对话
     async handleChatWithContext(sessionData: any, params: string[] = []): Promise<MessageObject[]> {
         try {

@@ -48,5 +48,9 @@ public/*
 
 # config
 config.toml
+meme.config.toml
+turtle-soup-config.toml
+
+downloads/*
 
 scripts/*
