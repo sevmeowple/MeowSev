@@ -31,19 +31,19 @@ export function apply(ctx: Context) {
 
 
 ctx.command('喵喵 [...params]')
-    .action(async ({ session }, ...params) => {
-      // 构造基础 URL
-      const endpoint = params[0] ? params[0] : ''
-      let url = `http://127.0.0.1:6040/${endpoint}`
+  .action(async ({ session }, ...params) => {
+    // 构造基础 URL
+    const endpoint = params[0] ? encodeURIComponent(params[0]) : ''
+    let url = `http://127.0.0.1:6040/${endpoint}`
 
-      // 构造请求体，包含 session 和参数
-      const requestBody = {
-        session: session,
-        params: params.slice(1)
-      }
+    // 构造请求体，包含 session 和参数
+    const requestBody = {
+      session: session,
+      params: params.slice(1)
+    }
 
-      try {
-        const response = await axios.post(url, requestBody)
+    try {
+      const response = await axios.post(url, requestBody)
 
         // 如果响应是消息对象数组，逐条发送
         if (Array.isArray(response.data)) {
@@ -70,23 +70,32 @@ ctx.command('喵喵 [...params]')
     })
 
   ctx.on('message', async (session) => {
-    // 所有的message转发到/message端点下面
     const endpoint = 'message'
     const url = `http://127.0.0.1:6040/${endpoint}`
-    // const query = { content: session.content }
-    // // 只发送请求不处理响应
-    // try {
-    //   await axios.get(url, { params: query })
-    // }
-    // catch (err: any) {
-    //   console.error(`转发消息失败：${err.message}`)
-    // }
-
-    // 转发完整的消息对象,直接发session?
     try {
-      await axios.post(url, {
-        data: session
-      })
+      const response = await axios.post(url, { data: session })
+
+      // 服务端通过 shouldReply 字段控制是否回复
+      if (response.data?.shouldReply) {
+        const payload = response.data.data
+
+        // 与 command 中相同的处理逻辑
+        if (Array.isArray(payload)) {
+          debugLog('收到消息数组:', payload)
+          for (const messageObj of payload) {
+            const elements = parseMessageObject(messageObj)
+            await session.send(elements)
+          }
+          return
+        }
+
+        if (payload && typeof payload === 'object' && payload.type) {
+          debugLog('收到单个消息对象:', payload)
+          const elements = parseMessageObject(payload)
+          await session.send(elements)
+          return
+        }
+      }
     } catch (err: any) {
       console.error(`转发消息失败：${err.message}`)
     }
