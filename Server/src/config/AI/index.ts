@@ -130,7 +130,7 @@ export class AIClientSDK {
                 return await generateText({ ...options, model: this.model });
             } catch (error) {
                 console.warn('主模型连接失败，尝试备用模型:', error);
-                // 失败时使用备用模型
+                // 失败时使用备用模型 - 保留所有参数包括tools
                 return await generateText({ ...options, model: this.modelalt });
             }
         };
@@ -216,36 +216,67 @@ export class AIClientSDK {
                             }
                         ];
 
-                        // 使用视觉模型生成回复
-                        const visionResult = await generateText({
-                            model: this.viewmodel,
-                            messages: visionMessages,
-                            system: '你是一个智能助手，能够分析图片内容并与用户进行自然的对话。请根据用户的问题和提供的图片给出详细、有用的回答。',
-                            temperature: 0.7,
-                        });
-
+                        // 使用视觉模型生成回复（带fallback）
+                        const visionResult = await (async () => {
+                            try {
+                                return await generateText({
+                                    model: this.viewmodel,
+                                    messages: visionMessages,
+                                    system: '你是一个智能助手，能够分析图片内容并与用户进行自然的对话。请根据用户的问题和提供的图片给出详细、有用的回答。',
+                                    temperature: 0.7,
+                                });
+                            } catch (error) {
+                                console.warn('视觉模型失败，使用备用模型:', error);
+                                return await generateText({
+                                    model: this.modelalt,
+                                    messages: visionMessages,
+                                    system: '你是一个智能助手，能够分析图片内容并与用户进行自然的对话。请根据用户的问题和提供的图片给出详细、有用的回答。',
+                                    temperature: 0.7,
+                                });
+                            }
+                        })();
                         finalText = visionResult.text;
                         console.log('🖼️ 视觉模型回复:', finalText);
                     }
                     else if (toolResponses.length > 0) {
                         const toolDataContext = toolResponses.join('\n\n');
 
-                        const finalResult = await generateText({
-                            model: this.model,
-                            messages: [
-                                ...this.context,
-                                {
-                                    role: 'assistant',
-                                    content: `我已经获取到了相关信息：\n${toolDataContext}`
-                                },
-                                {
-                                    role: 'user',
-                                    content: '请基于上述信息给我一个自然、详细的分析，不要重复说要查询什么，直接分析数据内容即可。'
-                                }
-                            ],
-                            temperature: 0.7,
-                        });
-
+                        const finalResult = await (async () => {
+                            try {
+                                return await generateText({
+                                    model: this.model,
+                                    messages: [
+                                        ...this.context,
+                                        {
+                                            role: 'assistant',
+                                            content: `我已经获取到了相关信息：\n${toolDataContext}`
+                                        },
+                                        {
+                                            role: 'user',
+                                            content: '请基于上述信息给我一个自然、详细的分析，不要重复说要查询什么，直接分析数据内容即可。'
+                                        }
+                                    ],
+                                    temperature: 0.7,
+                                });
+                            } catch (error) {
+                                console.warn('文本模型失败，使用备用模型:', error);
+                                return await generateText({
+                                    model: this.modelalt,
+                                    messages: [
+                                        ...this.context,
+                                        {
+                                            role: 'assistant',
+                                            content: `我已经获取到了相关信息：\n${toolDataContext}`
+                                        },
+                                        {
+                                            role: 'user',
+                                            content: '请基于上述信息给我一个自然、详细的分析，不要重复说要查询什么，直接分析数据内容即可。'
+                                        }
+                                    ],
+                                    temperature: 0.7,
+                                });
+                            }
+                        })();
                         finalText = finalResult.text;
                         console.log('📝 文本模型回复:', finalText);
                     }
@@ -346,6 +377,46 @@ export class AIClientSDK {
             throw new Error('AI 服务暂时不可用');
         }
     }
+
+    // 简单对话（无上下文，无工具）
+    async analyzeImage(
+        imageUrl: string,
+        prompt: string = "请描述这张图片",
+        systemPrompt?: string
+    ): Promise<string> {
+        try {
+            const userContent: UserContent = [
+                {
+                    type: 'text' as const,
+                    text: prompt
+                } as TextPart,
+                {
+                    type: 'image' as const,
+                    image: imageUrl
+                } as ImagePart
+            ];
+
+            const messages: ChatMessage[] = [
+                {
+                    role: 'user' as const,
+                    content: userContent
+                }
+            ];
+
+            const result = await generateText({
+                model: this.viewmodel,
+                messages,
+                system: systemPrompt || '你是一个智能助手，能够分析图片内容并给出详细、有用的描述。',
+                temperature: 0.7,
+            });
+
+            return result.text;
+        } catch (error) {
+            console.error('视觉分析失败:', error);
+            throw new Error('视觉服务暂时不可用');
+        }
+    }
+
 
     // 生成纯文本响应（无上下文，无工具）
     async generateText(prompt: string, systemPrompt?: string): Promise<string> {
@@ -531,23 +602,4 @@ export const CommonTools = {
         }
     }),
 
-    // 网络搜索（示例，需要实际的搜索 API）
-    webSearch: (): ToolDefinition => ({
-        name: 'webSearch',
-        description: '搜索网络信息',
-        inputSchema: z.object({
-            query: z.string().describe('搜索关键词'),
-            limit: z.number().optional().describe('返回结果数量')
-        }),
-        execute: async ({ query, limit = 5 }: { query: string; limit?: number }) => {
-            // 这里应该调用实际的搜索 API
-            return {
-                query,
-                results: [
-                    { title: '示例搜索结果', url: 'https://example.com', snippet: '这是一个示例结果' }
-                ],
-                message: '这是一个示例实现，请接入实际的搜索 API'
-            };
-        }
-    })
 };

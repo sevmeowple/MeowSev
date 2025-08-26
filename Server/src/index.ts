@@ -4,6 +4,8 @@ import { rootController } from "@controller/RootController";
 import { memeController } from "@controller/MemeController";
 import { trpgController } from "@controller/TRPGController";
 import {gameController} from "@controller/GameController";
+import { biliController } from "@controller/BilibiliController";
+
 
 import { ConfigUnion } from "./config/config";
 import { authPlugin } from "./middleware/auth";
@@ -15,6 +17,7 @@ const app = new Elysia()
   .use(memeController)
   .use(trpgController)
   .use(gameController)
+  .use(biliController)
   .listen(6040);
 
 console.log(

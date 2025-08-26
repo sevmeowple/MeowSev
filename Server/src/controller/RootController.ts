@@ -43,14 +43,12 @@ export const rootController = new Elysia()
         };
     })
     .post("/", async ({ body }): Promise<MessageObject[]> => {
-        // 根路由 - 使用15条上下文的AI对话
+        // 合并/和/vision路由，通过是否引用图片区分
         if (body && typeof body === 'object' && 'session' in body) {
+            const session = body.session as any;
+            // 没有图片内容，使用普通AI对话
             try {
-                const reply = await aiService.handleChatWithContext(body.session as any);
-                // return {
-                //     type: "text",
-                //     content: reply
-                // };
+                const reply = await aiService.handleChatWithContext(session);
                 return reply;
             } catch (error) {
                 return [{

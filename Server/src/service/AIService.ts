@@ -151,4 +151,13 @@ export class AIService {
             return "抱歉，我现在无法回复您的消息。";
         }
     }
+    // 图片分析功能
+    async analyzeImage(imageUrl: string, prompt: string = "请描述这张图片"): Promise<string> {
+        try {
+            return await this.ai.analyzeImage(imageUrl, prompt);
+        } catch (error) {
+            console.error('图片分析失败:', error);
+            throw new Error('视觉服务暂时不可用');
+        }
+    }
 }
