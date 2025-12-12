@@ -1,7 +1,7 @@
 import { getMemeManager } from "../config/plugins/meme";
 import { MessageObject } from "../utils/message";
+import { ConfigUnion } from "../config/config";
 import path from "path";
-
 export class MemeService {
   
   /**
@@ -11,7 +11,7 @@ export class MemeService {
    */
   getRandomMeme(category?: string): MessageObject {
     try {
-      const memeManager = getMemeManager();
+      const memeManager = getMemeManager(ConfigUnion.app.plugins.meme.configPath);
       const meme = memeManager.getRandom(category);
       
       if (!meme) {
@@ -48,7 +48,7 @@ export class MemeService {
    */
   getCategories(): MessageObject {
     try {
-      const memeManager = getMemeManager();
+      const memeManager = getMemeManager(ConfigUnion.app.plugins.meme.configPath);
       const categories = memeManager.getCategories();
       
       if (categories.length === 0) {

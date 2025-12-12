@@ -50,4 +50,18 @@ export class QueryService {
     return query.all(channelId, limit) as Message[];
   }
 
+  // 查询指定时间范围内频道的消息
+  async getMessagesByTimeRange(
+    channelId: string,
+    startTime: number,
+    endTime: number
+  ): Promise<Message[]> {
+    const query = this.db.query(`
+      SELECT * FROM messages 
+      WHERE channel_id = ? AND timestamp >= ? AND timestamp < ?
+      ORDER BY timestamp ASC
+    `);
+    return query.all(channelId, startTime, endTime) as Message[];
+  }
+
 }

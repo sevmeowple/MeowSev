@@ -6,6 +6,7 @@ import { getMemeManager } from "../config/plugins/meme";
 import { Meme } from "../utils/meme";
 import { promises as fs } from 'fs';
 import path from 'path';
+import { ConfigUnion } from "../config/config";
 
 
 // 图片下载工具函数
@@ -97,7 +98,7 @@ export const memeController = new Elysia()
       const [id, name, description, keywordsStr, category] = params;
 
       try {
-        const memeManager = getMemeManager();
+        const memeManager = getMemeManager(ConfigUnion.app.plugins.meme.configPath);
 
         // 检查 ID 是否已存在
         if (memeManager.getById(id)) {
@@ -202,7 +203,7 @@ export const memeController = new Elysia()
       const [id, ...rest] = params;
 
       try {
-        const memeManager = getMemeManager();
+        const memeManager = getMemeManager(ConfigUnion.app.plugins.meme.configPath);
 
         // 检查 meme 是否存在
         if (!memeManager.getById(id)) {
@@ -291,7 +292,7 @@ export const memeController = new Elysia()
       const [id] = params;
 
       try {
-        const memeManager = getMemeManager();
+        const memeManager = getMemeManager(ConfigUnion.app.plugins.meme.configPath);
 
         // 检查 meme 是否存在
         const existingMeme = memeManager.getById(id);
@@ -336,7 +337,7 @@ export const memeController = new Elysia()
     console.log('Meme list endpoint 收到请求:', JSON.stringify(body, null, 2));
 
     try {
-      const memeManager = getMemeManager();
+      const memeManager = getMemeManager(ConfigUnion.app.plugins.meme.configPath);
       let memes: Meme[] = [];
       let title = "📋 所有表情包列表：";
 

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cute Weather - {{location}}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .weather-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 30px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .weather-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .location {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .current-time {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .current-weather {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            border-radius: 20px;
+        }
+        
+        .weather-icon {
+            font-size: 80px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .temperature {
+            font-size: 48px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .weather-desc {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        
+        .feels-like {
+            font-size: 14px;
+            color: #777;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 5px 15px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+        
+        .weather-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .detail-item {
+            background: rgba(255, 255, 255, 0.6);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .detail-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .detail-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 2px;
+        }
+        
+        .detail-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .forecast {
+            margin-bottom: 20px;
+        }
+        
+        .forecast-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .forecast-item {
+            background: rgba(255, 255, 255, 0.6);
+            padding: 12px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .forecast-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .forecast-emoji {
+            font-size: 24px;
+        }
+        
+        .forecast-info {
+            flex: 1;
+        }
+        
+        .forecast-day {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .forecast-desc {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .forecast-temp {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .astronomy {
+            background: linear-gradient(135deg, #2c3e5015, #3b4a6b15);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .astronomy-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .astronomy-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 12px;
+        }
+        
+        .astronomy-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+        }
+        
+        .footer {
+            text-align: center;
+            font-size: 10px;
+            color: #999;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            padding-top: 15px;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .weather-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-card">
+        <div class="header">
+            <div class="location">{{location}}</div>
+            <div class="current-time">更新于 {{currentTime}}</div>
+        </div>
+        
+        <div class="current-weather">
+            <span class="weather-icon">{{currentEmoji}}</span>
+            <div class="temperature">{{currentTemp}}°</div>
+            <div class="weather-desc">{{currentDesc}}</div>
+            <div class="feels-like">体感温度 {{feelsLike}}°C</div>
+        </div>
+        
+        <div class="weather-details">
+            <div class="detail-item">
+                <div class="detail-icon">💧</div>
+                <div class="detail-label">湿度</div>
+                <div class="detail-value">{{humidity}}%</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-icon">💨</div>
+                <div class="detail-label">风速</div>
+                <div class="detail-value">{{windSpeed}}km/h</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-icon">👁️</div>
+                <div class="detail-label">能见度</div>
+                <div class="detail-value">{{visibility}}km</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-icon">🌡️</div>
+                <div class="detail-label">气压</div>
+                <div class="detail-value">{{pressure}}hPa</div>
+            </div>
+        </div>
+        
+        <div class="forecast">
+            <div class="forecast-title">今明天气</div>
+            <div class="forecast-item">
+                <div class="forecast-left">
+                    <span class="forecast-emoji">{{todayEmoji}}</span>
+                    <div class="forecast-info">
+                        <div class="forecast-day">今天</div>
+                        <div class="forecast-desc">{{todayDesc}}</div>
+                    </div>
+                </div>
+                <div class="forecast-temp">{{todayMinTemp}}° ~ {{todayMaxTemp}}°</div>
+            </div>
+            {{tomorrowForecast}}
+        </div>
+        
+        <div class="astronomy">
+            <div class="astronomy-title">{{moonEmoji}} 天文信息</div>
+            <div class="astronomy-grid">
+                <div class="astronomy-item">
+                    <span>🌅</span>
+                    <span>日出 {{sunrise}}</span>
+                </div>
+                <div class="astronomy-item">
+                    <span>🌇</span>
+                    <span>日落 {{sunset}}</span>
+                </div>
+                <div class="astronomy-item">
+                    <span>🌙</span>
+                    <span>月升 {{moonrise}}</span>
+                </div>
+                <div class="astronomy-item">
+                    <span>🌙</span>
+                    <span>月落 {{moonset}}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            数据来源: wttr.in | 月相: {{moonPhase}}
+        </div>
+    </div>
+</body>
+</html>

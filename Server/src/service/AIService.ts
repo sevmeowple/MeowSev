@@ -1,14 +1,14 @@
 import { ConfigUnionType } from "@/config/config";
-import { QueryService } from "./QueryService";
+import { MsgService } from "./MsgService";
 import { MessageObject } from "@/utils/message";
-
+import { Message } from "@/models/Message";
 export class AIService {
     private ai;
-    private queryService: QueryService;
+    private msgService: MsgService;
 
     constructor(ConfigUnion: ConfigUnionType) {
         this.ai = ConfigUnion.ai;
-        this.queryService = new QueryService(ConfigUnion);
+        this.msgService = new MsgService(ConfigUnion);
     }
 
     // 封装纯文本生成
@@ -61,10 +61,10 @@ export class AIService {
             }
 
             // 查询该频道内所有用户的最近15条消息（作为上下文）
-            const recentMessages = await this.queryService.getRecentChannelMessages(
-                channelId,
-                15
-            );
+            const allMessages = await this.msgService.getMessages();
+            const recentMessages = allMessages
+                .filter(msg => msg.channel_id === channelId)
+                .slice(0, 15);
 
             // 构建系统提示词
             const systemPrompt = this.buildSystemPrompt(sessionData, recentMessages);
@@ -83,7 +83,7 @@ export class AIService {
     }
 
     // 构建系统提示词
-    private buildSystemPrompt(sessionData: any, recentMessages: any[]): string {
+    private buildSystemPrompt(sessionData: any, recentMessages: Message[]): string {
         const userName = sessionData.user?.name || sessionData.member?.nick || '用户';
         const channelInfo = sessionData.channel?.id || '未知频道';
 
@@ -99,7 +99,10 @@ export class AIService {
         if (recentMessages.length > 0) {
             recentMessages.forEach((msg, index) => {
                 const timeStr = new Date(msg.timestamp).toLocaleString('zh-CN');
-                prompt += `\n${index + 1}. [${timeStr}] ${msg.user_name}: ${msg.content}`;
+                // 适配Message的数据结构
+                const userName = msg.user_name || `用户${msg.user_id}`;
+                const content = msg.content || '';
+                prompt += `\n${index + 1}. [${timeStr}] ${userName}: ${content}`;
             });
         } else {
             prompt += '\n（暂无历史对话）';

@@ -3,9 +3,11 @@ plugins:
     server:lwuor4:
       port: 5140
       maxPort: 5149
+      host: 0.0.0.0
     ~server-satori:y40f4c: {}
     ~server-temp:islyls: {}
   group:basic:
+    $collapsed: true
     ~admin:lypolb: {}
     ~bind:a0dffw: {}
     commands:kg0jwu:
@@ -20,6 +22,7 @@ plugins:
     rate-limit:rfwrtj: {}
     telemetry:cu55qn: {}
   group:console:
+    $collapsed: true
     actions:hrq431: {}
     analytics:0pyydy: {}
     android:emy9ob:
@@ -43,6 +46,7 @@ plugins:
     status:u61hqr: {}
     theme-vanilla:zm07qj: {}
   group:storage:
+    $collapsed: true
     ~database-mongo:3x1qm1:
       database: koishi
     ~database-mysql:eu3b0c:
@@ -74,4 +78,5 @@ plugins:
       root: .
   adapter-onebot:lbm9k0:
     selfId: '2314554773'
+    token: qwerty123~!@
   con-to-server:e335gd: {}

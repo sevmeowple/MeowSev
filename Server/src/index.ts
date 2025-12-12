@@ -5,7 +5,8 @@ import { memeController } from "@controller/MemeController";
 import { trpgController } from "@controller/TRPGController";
 import {gameController} from "@controller/GameController";
 import { biliController } from "@controller/BilibiliController";
-
+import { ustcController } from "@controller/USTCController";
+import { templateController } from "@controller/TemplateController";
 
 import { ConfigUnion } from "./config/config";
 import { authPlugin } from "./middleware/auth";
@@ -18,6 +19,8 @@ const app = new Elysia()
   .use(trpgController)
   .use(gameController)
   .use(biliController)
+  .use(ustcController)  
+  .use(templateController)
   .listen(6040);
 
 console.log(

@@ -384,10 +384,15 @@ function convertToOneBotFormat(message: string | MessageObject | MessageObject[]
       }];
       
     case 'image':
+      // 处理 file:// 前缀，OneBot 协议只需要文件路径
+      let filePath = msg.src || msg.url || '';
+      if (filePath.startsWith('file://')) {
+        filePath = filePath.substring(7); // 移除 'file://' 前缀
+      }
       return [{
         type: "image",
         data: {
-          file: msg.src || msg.url || ''
+          file: filePath
         }
       }];
       
@@ -400,18 +405,28 @@ function convertToOneBotFormat(message: string | MessageObject | MessageObject[]
       }];
       
     case 'audio':
+      // 处理 file:// 前缀
+      let audioPath = msg.src || msg.url || '';
+      if (audioPath.startsWith('file://')) {
+        audioPath = audioPath.substring(7);
+      }
       return [{
         type: "record",
         data: {
-          file: msg.src || msg.url || ''
+          file: audioPath
         }
       }];
       
     case 'video':
+      // 处理 file:// 前缀
+      let videoPath = msg.src || msg.url || '';
+      if (videoPath.startsWith('file://')) {
+        videoPath = videoPath.substring(7);
+      }
       return [{
         type: "video",
         data: {
-          file: msg.src || msg.url || ''
+          file: videoPath
         }
       }];
       
