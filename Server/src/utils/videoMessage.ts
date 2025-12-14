@@ -50,10 +50,10 @@ export function createDetailedVideoMessage(
     format: string
 ): MessageObject[] {
     return [
-        {
-            type: 'text',
-            content: `📺 ${title}\n👤 UP主: ${author}\n🆔 BVID: ${bvid}\n📁 大小: ${fileSize}\n🎥 清晰度: ${quality}P\n📼 格式: ${format}`
-        },
+        // {
+        //     type: 'text',
+        //     content: `📺 ${title}\n👤 UP主: ${author}\n🆔 BVID: ${bvid}\n📁 大小: ${fileSize}\n🎥 清晰度: ${quality}P\n📼 格式: ${format}`
+        // },
         {
             type: 'video',
             src: videoPath,

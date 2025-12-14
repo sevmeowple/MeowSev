@@ -39,6 +39,15 @@ export const AppConfigSchema = z.object({
       oneBotApiUrl: z.string().default("http://127.0.0.1:3033"), // OneBot API 地址
     }),
   }),
+  personas: z
+    .object({
+      default: z.string().default(" "),
+      groups: z.record(z.string(),z.string()).default({}), // key: group_id, value: prompt
+    })
+    .default({
+      default: " ",
+      groups: {},
+    }),
 });
 
 export type AppConfig = z.infer<typeof AppConfigSchema>;
