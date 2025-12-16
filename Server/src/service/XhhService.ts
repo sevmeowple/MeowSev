@@ -54,18 +54,42 @@ interface CachedSession {
   expiresAt: number;
 }
 
+/**
+ * text 字段 JSON 数组中的内容项
+ * type 可以是 "text"、"img" 或 "html"
+ */
+interface TextContentItem {
+  text?: string;
+  type: "text" | "img" | "html";
+  url?: string;
+  width?: string;
+  height?: string;
+}
+
+/**
+ * 用户信息
+ */
+interface XhhUserInfo {
+  userid: number;
+  username: string;
+  avatar: string;
+  [key: string]: any;
+}
+
 interface XhhLinkData {
   linkid: string;
   title: string;
+  text: string; // JSON 字符串，包含文本和图片的混合内容
   content: string;
   click: number;
   comment_num: number;
   link_award_num: number;
   favour_count: number;
   userid: string;
+  user?: XhhUserInfo; // 用户信息对象
   ip_location: string;
-  create_time: string;
-  modify_time: string;
+  create_at: number;
+  modify_at: number;
   [key: string]: any;
 }
 
@@ -269,54 +293,129 @@ export class XhhService {
   }
 
   /**
-   * 从帖子数据中提取图片URL列表
+   * 从 HTML 字符串中提取所有图片 URL
    */
-  private extractImageUrls(postData: XhhLinkData): string[] {
-    const imageUrls: string[] = [];
-    
-    // 从 imgs 字段提取（可能是数组或对象数组）
-    if (postData.imgs && Array.isArray(postData.imgs)) {
-      for (const img of postData.imgs) {
-        if (typeof img === 'string') {
-          imageUrls.push(img);
-        } else if (img && typeof img === 'object') {
-          // 可能是 { src: '', url: '' } 格式
-          const url = img.src || img.url || img.img_src || img.original_url;
-          if (url) imageUrls.push(url);
-        }
+  private extractImageUrlsFromHtml(htmlContent: string): string[] {
+    const urls: string[] = [];
+    // 匹配 <img ... data-original="url" ... /> 或 <img ... src="url" ... />
+    const imgRegex = /<img[^>]*(?:data-original|src)=["']([^"']+)["'][^>]*>/gi;
+    let match;
+    while ((match = imgRegex.exec(htmlContent)) !== null) {
+      if (match[1]) {
+        urls.push(match[1]);
       }
     }
-    
-    // 从 content_imgs 字段提取
-    if (postData.content_imgs && Array.isArray(postData.content_imgs)) {
-      for (const img of postData.content_imgs) {
-        if (typeof img === 'string') {
-          imageUrls.push(img);
-        } else if (img && typeof img === 'object') {
-          const url = img.src || img.url || img.img_src || img.original_url;
-          if (url) imageUrls.push(url);
-        }
-      }
-    }
-    
-    // 从 link_imgs 提取
-    if (postData.link_imgs && Array.isArray(postData.link_imgs)) {
-       for (const img of postData.link_imgs) {
-        if (typeof img === 'string') {
-          imageUrls.push(img);
-        } else if (img && typeof img === 'object') {
-          const url = img.src || img.url || img.img_src || img.original_url;
-          if (url) imageUrls.push(url);
-        }
-      }
-    }
-    
-    // 去重
-    return [...new Set(imageUrls)];
+    return urls;
   }
 
   /**
-   * 准备模板数据（包含下载图片）
+   * 替换 HTML 中的图片 URL 为 base64
+   */
+  private replaceImageUrlsInHtml(htmlContent: string, urlToBase64Map: Map<string, string>): string {
+    let result = htmlContent;
+    for (const [url, base64] of urlToBase64Map) {
+      // 替换 data-original 和 src 属性中的 URL
+      result = result.replace(new RegExp(url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), base64);
+    }
+    return result;
+  }
+
+  /**
+   * 解析并渲染帖子内容（text 字段是 JSON 数组）
+   * 支持 type: "text", "img", "html"
+   */
+  private async parseAndRenderContent(textJson: string): Promise<string> {
+    try {
+      const contentItems: TextContentItem[] = JSON.parse(textJson);
+      let html = '';
+      let imageBuffer: { url: string; base64?: string }[] = [];
+
+      // 先收集所有图片URL（包括 img 类型和 html 内容中的图片）
+      const allImageUrls: string[] = [];
+      for (const item of contentItems) {
+        if (item.type === 'img' && item.url) {
+          allImageUrls.push(item.url);
+        } else if (item.type === 'html' && item.text) {
+          // 从 HTML 内容中提取图片 URL
+          const htmlImageUrls = this.extractImageUrlsFromHtml(item.text);
+          allImageUrls.push(...htmlImageUrls);
+        }
+      }
+
+      // 去重
+      const uniqueImageUrls = [...new Set(allImageUrls)];
+
+      // 批量下载图片并转换为 base64
+      console.log(`[XhhService] 从 text JSON 中发现 ${uniqueImageUrls.length} 张图片，开始下载...`);
+      const base64Results = await Promise.all(
+        uniqueImageUrls.map(url => downloadImageToBase64(url))
+      );
+      
+      // 创建 URL -> base64 映射
+      const urlToBase64Map = new Map<string, string>();
+      uniqueImageUrls.forEach((url, index) => {
+        const base64 = base64Results[index];
+        if (base64) {
+          urlToBase64Map.set(url, base64);
+        }
+      });
+      console.log(`[XhhService] 成功下载 ${urlToBase64Map.size} 张图片`);
+
+      // 遍历内容项，生成 HTML
+      for (const item of contentItems) {
+        if (item.type === 'text' && item.text) {
+          // 先输出之前积累的图片
+          if (imageBuffer.length > 0) {
+            html += '<div class="image-gallery">';
+            for (const img of imageBuffer) {
+              const imgSrc = img.base64 || img.url;
+              html += `<div class="image-item"><img src="${imgSrc}" alt="帖子图片" /></div>`;
+            }
+            html += '</div>';
+            imageBuffer = [];
+          }
+          // 输出文本内容
+          html += `<div class="text-content">${item.text}</div>`;
+        } else if (item.type === 'html' && item.text) {
+          // 先输出之前积累的图片
+          if (imageBuffer.length > 0) {
+            html += '<div class="image-gallery">';
+            for (const img of imageBuffer) {
+              const imgSrc = img.base64 || img.url;
+              html += `<div class="image-item"><img src="${imgSrc}" alt="帖子图片" /></div>`;
+            }
+            html += '</div>';
+            imageBuffer = [];
+          }
+          // 输出 HTML 内容，并替换其中的图片 URL 为 base64
+          const processedHtml = this.replaceImageUrlsInHtml(item.text, urlToBase64Map);
+          html += `<div class="text-content">${processedHtml}</div>`;
+        } else if (item.type === 'img' && item.url) {
+          // 积累图片，稍后一起输出
+          const base64 = urlToBase64Map.get(item.url);
+          imageBuffer.push({ url: item.url, base64: base64 || undefined });
+        }
+      }
+
+      // 输出剩余的图片
+      if (imageBuffer.length > 0) {
+        html += '<div class="image-gallery">';
+        for (const img of imageBuffer) {
+          const imgSrc = img.base64 || img.url;
+          html += `<div class="image-item"><img src="${imgSrc}" alt="帖子图片" /></div>`;
+        }
+        html += '</div>';
+      }
+
+      return html;
+    } catch (error) {
+      console.error('[XhhService] 解析帖子内容失败:', error);
+      return '<p class="text-content">内容解析失败</p>';
+    }
+  }
+
+  /**
+   * 准备模板数据（解析 text JSON 字段）
    */
   private async prepareTemplateData(postData: XhhLinkData): Promise<Record<string, any>> {
     // 格式化时间
@@ -332,33 +431,22 @@ export class XhhService {
       });
     };
 
-    // 提取并下载图片
-    const imageUrls = this.extractImageUrls(postData);
-    console.log(`[XhhService] 发现 ${imageUrls.length} 张图片，开始下载...`);
-    
-    const imageBase64List = await downloadImagesToBase64(imageUrls);
-    console.log(`[XhhService] 成功下载 ${imageBase64List.length} 张图片`);
-    
-    // 生成图片HTML
-    let imagesHtml = '';
-    if (imageBase64List.length > 0) {
-      imagesHtml = '<div class="image-gallery">';
-      for (const base64 of imageBase64List) {
-        imagesHtml += `<div class="image-item"><img src="${base64}" /></div>`;
-      }
-      imagesHtml += '</div>';
-    }
+    // 解析并渲染 text 字段（包含文本和图片的 JSON 数组）
+    const contentHtml = await this.parseAndRenderContent(postData.text);
+
+    // 获取用户名（从 user 对象中获取，若无则使用默认值）
+    const username = postData.user?.username || '未知用户';
 
     return {
       linkid: postData.linkid || '',
       title: postData.title || '无标题',
-      content: postData.description || postData.content || '',
-      images_html: imagesHtml,
+      content: contentHtml, // 使用解析后的 HTML 内容
       click: postData.click || 0,
       comment_num: postData.comment_num || 0,
       link_award_num: postData.link_award_num || 0,
       favour_count: postData.favour_count || 0,
       userid: postData.userid || '未知',
+      username: username, // 作者用户名
       ip_location: postData.ip_location || '未知',
       create_time: formatTime(postData.create_at),
       modify_time: formatTime(postData.modify_at)
