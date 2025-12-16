@@ -5,10 +5,11 @@ import { ConfigUnion } from "@/config/config";
 import { createXiaohongshuProcessor } from "@/service/message/processors/xhsProcessor";
 import { EchoPluginController } from "./messagePlugins/EchoPluginController";
 import { BiliCardPluginController } from './messagePlugins/BiliCardPluginController';
-
+import { XhhCardPluginController } from './messagePlugins/XhhCardPluginController';
 const msgService = new MsgService(ConfigUnion);
 const echoPlugin = new EchoPluginController();
 const biliCardPlugin = new BiliCardPluginController();
+const xhhCardPlugin = new XhhCardPluginController();
 
 // msgService.registerProcessor(createXiaohongshuProcessor(ConfigUnion))
 // 注册当前控制器的路由
@@ -19,6 +20,7 @@ const pluginRouter: Record<string, BasePluginController> = {
   // echo: echoPlugin,
   // repeat: echoPlugin,
   '[cq:json': biliCardPlugin
+  
 };
 
 // 动态加载所有插件（后续可改为自动扫描）
@@ -41,6 +43,8 @@ export const msgController = new Elysia()
     if (raw.includes('[CQ:json')) {
       console.log('[MsgController] 触发卡片插件');
       const result = await biliCardPlugin.handle(sessionData);
+      const res_xhh = await xhhCardPlugin.handle(sessionData);
+      if (res_xhh.shouldReply) return res_xhh;
       console.log('[MsgController] 插件返回:', result);
       if (result.shouldReply) return result;
     }
