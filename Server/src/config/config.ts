@@ -11,6 +11,7 @@ import config from "../../config.toml";
 import { weatherTool } from "./AI/plugins/weather";
 import { picTool } from "./AI/plugins/pic";
 import { picAltTool } from "./AI/plugins/picAlt";
+import { rogueItemSearchTool } from "./AI/plugins/rogueItems";
 import { getMemeManager } from "./plugins/meme";
 import { weatherAltTool } from "./AI/plugins/weatherAlt";
 
@@ -74,7 +75,7 @@ export function CreateConfigUnion(AppConfig: AppConfig): ConfigUnionType {
   // aiClient.registerTool(picTool);
   aiClient.registerTool(picAltTool);
   aiClient.registerTool(weatherAltTool);
-
+  aiClient.registerTool(rogueItemSearchTool);
   return {
     app: AppConfig,
     database: db,
