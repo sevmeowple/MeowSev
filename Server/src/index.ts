@@ -7,6 +7,8 @@ import {gameController} from "@controller/GameController";
 import { biliController } from "@controller/BilibiliController";
 import { ustcController } from "@controller/USTCController";
 import { templateController } from "@controller/TemplateController";
+import { reportController } from "./controller/ReportController";
+import { arknightsController } from "./controller/ArknightsController";
 
 import { ConfigUnion } from "./config/config";
 import { authPlugin } from "./middleware/auth";
@@ -21,6 +23,8 @@ const app = new Elysia()
   .use(biliController)
   .use(ustcController)  
   .use(templateController)
+  .use(reportController)
+  .use(arknightsController)
   .listen(6040);
 
 console.log(

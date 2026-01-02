@@ -54,3 +54,6 @@ turtle-soup-config.toml
 downloads/*
 
 scripts/*
+
+temp/*
+tmp/*
