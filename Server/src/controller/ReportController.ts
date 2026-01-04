@@ -2,11 +2,20 @@ import { Elysia } from "elysia";
 import { RouteRegistry } from "../routes/registry";
 import { ReportRenderService } from "../service/Report/reportRender";
 import { MessageObject, SessionData, extractGameSessionInfo } from "../utils/message";
+import { HelpRegistry } from "../utils/HelpRegistry";
 
 // 注册路由
 RouteRegistry.registerBatch([
   'report2025'
 ]);
+
+// 注册帮助信息
+HelpRegistry.register({
+  command: 'report2025',
+  description: '生成2025年度群聊报告',
+  usage: 'report2025',
+  details: '博士，2025年的年度总结报告已经准备好了。请在群聊中使用此指令，我会为您生成一份详细的数据分析报告。'
+});
 
 const reportService = new ReportRenderService();
 

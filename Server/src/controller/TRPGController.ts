@@ -2,9 +2,19 @@ import { Elysia } from "elysia";
 import { RouteRegistry } from "../routes/registry";
 import { TRPGService } from "../service/TRPGService";
 import { MessageObject } from "../utils/message";
+import { HelpRegistry } from "../utils/HelpRegistry";
 
 // 注册当前控制器的路由
 RouteRegistry.registerBatch(['roll', 'dice', 'trpg-help']);
+
+// 注册帮助信息
+HelpRegistry.register({
+  command: 'roll',
+  description: 'TRPG 骰子工具',
+  usage: 'roll [表达式]',
+  examples: ['roll 1d20', 'roll 2d6+3', 'roll 1d100'],
+  details: '博士，如果您在进行战术模拟或 TRPG 游戏时需要判定，可以使用这个骰子工具。支持标准的骰子表达式，例如 1d20 或 2d6+5。'
+});
 
 const trpgService = new TRPGService();
 

@@ -7,6 +7,7 @@ import {
     createErrorMessage
 } from "../utils/message";
 import path from "path";
+import { HelpRegistry } from "../utils/HelpRegistry";
 
 // 注册USTC相关路由
 RouteRegistry.registerBatch([
@@ -17,6 +18,15 @@ RouteRegistry.registerBatch([
     'ustc-bus-xy',
     'bus'
 ]);
+
+// 注册帮助信息
+HelpRegistry.register({
+    command: 'ustc',
+    description: '中国科学技术大学相关服务',
+    usage: 'ustc-bus [类型] 或 ustc-calendar',
+    examples: ['ustc-bus 高新园区班车', 'ustc-calendar', 'bus (查看校车表)'],
+    details: '博士，这里是中国科学技术大学的相关信息服务。我可以为您查询校车时刻表和校历，希望能对您的行程安排有所帮助。'
+});
 
 // 初始化服务
 const ustcService = new USTCService();

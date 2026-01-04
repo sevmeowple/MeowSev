@@ -15,6 +15,7 @@ import {
 } from "../utils/message";
 import { ConfigUnion } from "../config/config";
 import { paramCase } from "koishi";
+import { HelpRegistry } from "../utils/HelpRegistry";
 
 // 注册游戏相关路由
 RouteRegistry.registerBatch([
@@ -32,6 +33,26 @@ RouteRegistry.registerBatch([
   'turtle-guess',
   'turtle-config'
 ]);
+
+// 注册帮助信息
+HelpRegistry.register({
+  command: 'game',
+  description: '娱乐模块与海龟汤游戏',
+  usage: 'game-create [游戏名] 或 turtle-start',
+  examples: ['turtle-start', 'turtle-ask 是不是意外?', 'turtle-guess 凶手是...'],
+  details: `博士，工作之余适当的休息也是必要的。
+目前我们支持以下娱乐项目：
+
+🐢 海龟汤 (Turtle Soup)
+- turtle-start: 开始一局新的海龟汤
+- turtle-ask [问题]: 向主持人提问（是/否/无关）
+- turtle-guess [猜测]: 尝试还原故事全貌
+- turtle-hint: 请求提示
+- turtle-status: 查看当前游戏状态
+- turtle-end: 结束当前游戏
+
+祝您玩得开心，博士。`
+});
 
 // 初始化服务
 const contextService = new ContextService(ConfigUnion);

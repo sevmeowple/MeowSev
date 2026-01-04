@@ -9,12 +9,30 @@ import {
     createTextMessage
 } from "../utils/message";
 import { ConfigUnion } from "../config/config";
+import { HelpRegistry } from "../utils/HelpRegistry";
 
 // 注册B站相关路由
 RouteRegistry.registerBatch([
     'bili',
     'bili-bv'
 ]);
+
+// 注册帮助信息
+HelpRegistry.register({
+    command: 'bili',
+    description: '智能搜索并下载B站视频',
+    usage: 'bili [关键词] [需求描述?]',
+    examples: ['bili 明日方舟', 'bili 危机合约 攻略'],
+    details: '博士，如果您想看些视频放松一下，我可以帮您在 Bilibili 上搜索。您可以告诉我关键词，或者具体的需求，我会为您筛选最合适的内容。'
+});
+
+HelpRegistry.register({
+    command: 'bili-bv',
+    description: '通过 BV 号或链接下载视频',
+    usage: 'bili-bv [BV号/链接]',
+    examples: ['bili-bv BV1234567890', 'bili-bv https://www.bilibili.com/video/BV...'],
+    details: '博士，如果您已经有了目标的 BV 号或链接，请直接交给我，我会立刻为您获取视频资源。'
+});
 
 // 初始化服务
 const biliService = new BilibiliService(ConfigUnion);

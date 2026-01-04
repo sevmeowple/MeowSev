@@ -7,6 +7,7 @@ import { Meme } from "../utils/meme";
 import { promises as fs } from 'fs';
 import path from 'path';
 import { ConfigUnion } from "../config/config";
+import { HelpRegistry } from "../utils/HelpRegistry";
 
 
 // 图片下载工具函数
@@ -61,6 +62,28 @@ RouteRegistry.registerBatch([
   'meme-delete',
   'meme-list'
 ]);
+
+// 注册帮助信息
+HelpRegistry.register({
+    command: 'meme',
+    description: '检索或管理梗图资源',
+    usage: 'meme [分类名] 或 meme-add ...',
+    examples: [
+        'meme          (随机调取)',
+        'meme 哭       (调取"哭"分类资源)',
+        'meme-list     (查看资源索引)',
+        'meme-add-from-session [id] [name] ... (录入新资源)'
+    ],
+    details: `博士，工作压力大的时候，看看这些有趣的图片也许能缓解心情。
+    
+支持的指令：
+- meme [分类]: 从指定分类中随机调取一张图片
+- meme-list: 查看目前数据库中所有的分类索引
+- meme-add: 将新的资源录入数据库
+- meme-delete: 从数据库中移除资源
+
+请适度娱乐，博士。`
+});
 
 const memeService = new MemeService();
 

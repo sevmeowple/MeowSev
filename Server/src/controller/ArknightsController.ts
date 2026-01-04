@@ -2,11 +2,21 @@ import { Elysia } from "elysia";
 import { RouteRegistry } from "../routes/registry";
 import { PrtsService } from "../service/Arknights/prts";
 import { MessageObject } from "../utils/message";
+import { HelpRegistry } from "../utils/HelpRegistry";
 
 // 注册 arknights 相关路由
 RouteRegistry.registerBatch([
   'wiki'
 ]);
+
+// 注册帮助信息
+HelpRegistry.register({
+  command: 'wiki',
+  description: '查询罗德岛干员档案',
+  usage: 'wiki [干员名称]',
+  examples: ['wiki 艾雅法拉', 'wiki 凯尔希'],
+  details: '博士，如果您需要查阅干员的详细资料，请告诉我名字，我会为您调取 PRTS 数据库中的档案。'
+});
 
 const prtsService = new PrtsService();
 
