@@ -1,6 +1,9 @@
 import path from "path";
 import * as fs from "fs";
+import axios from "axios";
 import { browserManager } from "@/utils/browser";
+import { tsxToPic } from "@/utils/plugin/browser/tsxToPic";
+import { HolidayCalendar, HolidayData } from "@/view/HolidayCalendar";
 
 type Location = "全部" | "东区" | "西区" | "南区" | "北区";
 type Week = "工作日" | "节假日" | "当前时间";
@@ -27,6 +30,33 @@ export class USTCService {
     return type === "高新园区班车" 
       ? await this.captureGxBus()
       : await this.captureXyBus(start, end, week, isNow);
+  }
+
+  async getHolidayCalendar(year: number = new Date().getFullYear()): Promise<string | null> {
+    try {
+      const response = await axios.get(`https://holiday.ailcc.com/api/holiday/year/${year}`);
+      if (response.data.code !== 0) {
+        console.error("Holiday API error:", response.data);
+        return null;
+      }
+      
+      const holidayData: HolidayData = response.data.holiday;
+      
+      const imagePath = await tsxToPic(HolidayCalendar, {
+        year,
+        data: holidayData
+      }, {
+        width: 1200,
+        height: 1200, 
+        outputFileName: `holiday_calendar_${year}.png`,
+        outputDir: this.dataDir
+      });
+      
+      return imagePath;
+    } catch (e) {
+      console.error("Failed to fetch holiday calendar:", e);
+      return null;
+    }
   }
 
   async getCalendar(): Promise<string | null> {

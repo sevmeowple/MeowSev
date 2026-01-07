@@ -5,6 +5,7 @@ export interface Meme {
     description: string;
     keywords?: string[];
     category?: string;
+    allowAI?: boolean;
 }
 
 export interface MemeCollection {

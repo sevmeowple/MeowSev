@@ -14,6 +14,7 @@ import { picAltTool } from "./AI/plugins/picAlt";
 import { rogueItemSearchTool } from "./AI/plugins/rogueItems";
 import { getMemeManager } from "./plugins/meme";
 import { weatherAltTool } from "./AI/plugins/weatherAlt";
+import { memeTool } from "./AI/plugins/meme";
 
 export const AppConfigSchema = z.object({
   port: z.number().default(6040),
@@ -76,6 +77,11 @@ export function CreateConfigUnion(AppConfig: AppConfig): ConfigUnionType {
   aiClient.registerTool(picAltTool);
   aiClient.registerTool(weatherAltTool);
   aiClient.registerTool(rogueItemSearchTool);
+
+  // if (AppConfig.plugins.meme.enabled) {
+  //   aiClient.registerTool(memeTool);
+  // }
+
   return {
     app: AppConfig,
     database: db,

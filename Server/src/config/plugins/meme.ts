@@ -10,7 +10,8 @@ export const MemeSchema = z.object({
   description: z.string(),
   filePath: z.string(),
   keywords: z.array(z.string()).optional(),
-  category: z.string().optional()
+  category: z.string().optional(),
+  allowAI: z.boolean().default(false).optional()
 });
 
 export const MemeCollectionSchema = z.object({

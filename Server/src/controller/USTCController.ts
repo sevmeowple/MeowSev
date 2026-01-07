@@ -16,16 +16,17 @@ RouteRegistry.registerBatch([
     'ustc-bus-now',
     'ustc-bus-gx',
     'ustc-bus-xy',
-    'bus'
+    'bus',
+    'holiday'
 ]);
 
 // 注册帮助信息
 HelpRegistry.register({
     command: 'ustc',
-    description: '中国科学技术大学相关服务',
-    usage: 'ustc-bus [类型] 或 ustc-calendar',
-    examples: ['ustc-bus 高新园区班车', 'ustc-calendar', 'bus (查看校车表)'],
-    details: '博士，这里是中国科学技术大学的相关信息服务。我可以为您查询校车时刻表和校历，希望能对您的行程安排有所帮助。'
+    description: '中国科学技术大学相关服务及节假日查询',
+    usage: 'ustc-bus [类型], ustc-calendar 或 holiday [年份]',
+    examples: ['ustc-bus 高新园区班车', 'ustc-calendar', 'bus (查看校车表)', 'holiday 2026'],
+    details: '博士，这里是中国科学技术大学的相关信息服务。我可以为您查询校车时刻表、校历以及节假日安排，希望能对您的行程安排有所帮助。'
 });
 
 // 初始化服务
@@ -148,3 +149,36 @@ export const ustcController = new Elysia()
             return [createErrorMessage(`❌ 查询失败: ${error instanceof Error ? error.message : String(error)}`)];
         }
     })
+
+    .post("/holiday", async ({ body }): Promise<MessageObject[]> => {
+        console.log('Holiday endpoint 收到请求:', JSON.stringify(body, null, 2));
+
+        const { params } = extractRequestData(body);
+        let year = new Date().getFullYear();
+        
+        if (params.length > 0) {
+            const parsedYear = parseInt(params[0]);
+            if (!isNaN(parsedYear) && parsedYear > 2000 && parsedYear < 2100) {
+                year = parsedYear;
+            }
+        }
+
+        try {
+            console.log(`📅 查询节假日日历: ${year}`);
+            const result = await ustcService.getHolidayCalendar(year);
+
+            if (!result) {
+                return [createErrorMessage("❌ 获取节假日日历失败")];
+            }
+
+            return [{
+                type: "image",
+                src: `file://${result}`,
+                alt: `${year}年节假日日历`,
+                content: `📅 ${year}年节假日日历`
+            }];
+        } catch (error) {
+            console.error('节假日日历查询失败:', error);
+            return [createErrorMessage(`❌ 查询失败: ${error instanceof Error ? error.message : String(error)}`)];
+        }
+    });
