@@ -33,4 +33,11 @@ export class DatabaseManager {
     }
     return this.instance;
   }
+
+  static close(): void {
+    if (this.instance) {
+      this.instance.close();
+      console.log("[Database] SQLite 连接已关闭");
+    }
+  }
 }

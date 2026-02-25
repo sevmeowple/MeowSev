@@ -9,6 +9,20 @@ bun run dev          # Dev mode with watch (src/index.ts)
 bun run src/index.ts # Direct run
 ```
 
+### PM2 进程管理
+
+```bash
+npm i -g pm2         # 安装 pm2
+bun run pm2:start    # 启动 (ecosystem.config.cjs)
+bun run pm2:stop     # 停止
+bun run pm2:restart  # 重启
+bun run pm2:reload   # 热重启 (graceful)
+bun run pm2:logs     # 查看日志
+bun run pm2:status   # 查看状态
+```
+
+Graceful shutdown 会按顺序清理：Elysia server → 定时任务 → Puppeteer → SQLite。
+
 Runtime: Bun. Port: 6040. No test suite configured.
 
 ## Path Aliases

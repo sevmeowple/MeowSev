@@ -14,6 +14,7 @@ import { catController } from "./controller/CatController";
 
 import { ConfigUnion } from "./config/config";
 import { authPlugin } from "./middleware/auth";
+import { registerShutdown } from "./shutdown";
 
 // 导入 Bilibili 缓存定时清理服务
 import { startBilibiliCacheScheduler } from "./service/Bilibili/scheduler";
@@ -37,6 +38,9 @@ const app = new Elysia()
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
 );
+
+// 注册优雅关闭
+registerShutdown(app);
 
 // 启动 Bilibili 缓存定时清理任务（每日7:00清理超过2天的视频）
 startBilibiliCacheScheduler();
