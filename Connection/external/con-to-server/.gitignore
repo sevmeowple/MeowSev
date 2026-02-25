@@ -16,5 +16,3 @@ tsconfig.tsbuildinfo
 *.ntvs*
 *.njsproj
 *.sln
-
-debug.log

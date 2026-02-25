@@ -185,4 +185,42 @@ export class VideoCacheManager {
             return false;
         }
     }
+
+    /**
+     * 清理过期缓存（超过指定天数的视频）
+     * @param maxAgeDays 最大保留天数，默认2天
+     * @returns 清理的视频数量
+     */
+    cleanupExpiredCache(maxAgeDays: number = 2): number {
+        const now = Date.now();
+        const maxAgeMs = maxAgeDays * 24 * 60 * 60 * 1000;
+        let removedCount = 0;
+        const removedVideos: string[] = [];
+
+        for (const [bvid, entry] of this.cache.entries()) {
+            const age = now - entry.downloadTime;
+            if (age > maxAgeMs) {
+                try {
+                    if (fs.existsSync(entry.filePath)) {
+                        fs.unlinkSync(entry.filePath);
+                    }
+                    this.cache.delete(bvid);
+                    removedVideos.push(entry.title);
+                    removedCount++;
+                } catch (error) {
+                    console.error(`❌ 删除过期视频失败 ${bvid}:`, error);
+                }
+            }
+        }
+
+        if (removedCount > 0) {
+            this.saveCache();
+            console.log(`🧹 清理了 ${removedCount} 个过期视频缓存 (>${maxAgeDays}天):`);
+            removedVideos.forEach(title => console.log(`   - ${title}`));
+        } else {
+            console.log(`✅ 没有需要清理的过期视频 (保留期限: ${maxAgeDays}天)`);
+        }
+
+        return removedCount;
+    }
 }

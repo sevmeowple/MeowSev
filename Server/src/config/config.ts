@@ -76,9 +76,9 @@ export function CreateConfigUnion(AppConfig: AppConfig): ConfigUnionType {
   // aiClient.registerTool(picTool);
   aiClient.registerTool(picAltTool);
   aiClient.registerTool(weatherAltTool);
-  aiClient.registerTool(rogueItemSearchTool);
+  // aiClient.registerTool(rogueItemSearchTool);
 
-  // if (AppConfig.plugins.meme.enabled) {
+  //   // if (AppConfig.plugins.meme.enabled) {
   //   aiClient.registerTool(memeTool);
   // }
 

@@ -3,7 +3,7 @@ dist
 /cache
 /data
 /temp
-# external
+external
 
 .env.local
 

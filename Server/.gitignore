@@ -52,8 +52,21 @@ meme.config.toml
 turtle-soup-config.toml
 
 downloads/*
+src/downloads/*
+src/public/*
 
 scripts/*
 
 temp/*
 tmp/*
+
+# database
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.db
+*.db-shm
+*.db-wal
+
+# claude code
+.claude/

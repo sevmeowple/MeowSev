@@ -1,5 +1,5 @@
 {
-  "name": "Connection",
+  "name": "koishi-app",
   "version": "0.0.0",
   "packageManager": "yarn@4.1.0",
   "private": true,
@@ -83,7 +83,6 @@
     "@koishijs/plugin-server-temp": "^1.5.0",
     "@koishijs/plugin-status": "^7.4.10",
     "koishi": "^4.18.7",
-    "koishi-plugin-adapter-milky": "^0.0.5",
     "koishi-plugin-adapter-onebot": "6.8.0",
     "koishi-plugin-android": "^0.0.1",
     "koishi-plugin-assets-local": "^3.3.2",

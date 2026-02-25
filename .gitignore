@@ -1,3 +1,22 @@
 Client
 
 repos
+
+# database
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.db
+*.db-shm
+*.db-wal
+
+# claude code
+.claude/
+
+# napcat runtime
+napcat/
+libnapcat_launcher.so
+loadNapCat.js
+launcher.cpp
+launcher.sh
+napcat.sh

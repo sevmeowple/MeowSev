@@ -173,6 +173,14 @@ export class MsgService {
     return query.all() as Message[];
   }
 
+  async getMessagesByChannel(channelId: string, limit: number = 20): Promise<Message[]> {
+    const query = this.db.query(
+      "SELECT * FROM messages WHERE channel_id = ? ORDER BY timestamp DESC LIMIT ?"
+    );
+    const results = query.all(channelId, limit) as Message[];
+    return results.reverse();
+  }
+
   async getMessagesByUser(userId: string): Promise<Message[]> {
     const query = this.db.query("SELECT * FROM messages WHERE user_id = ? ORDER BY timestamp DESC");
     return query.all(userId) as Message[];
