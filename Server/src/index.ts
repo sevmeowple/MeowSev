@@ -11,6 +11,10 @@ import { reportController } from "./controller/ReportController";
 import { arknightsController } from "./controller/ArknightsController";
 import { summaryController } from "./controller/SummaryController";
 import { catController } from "./controller/CatController";
+import { agentController } from "./controller/AgentController";
+import { reservationController } from "./controller/ReservationController";
+import { profileController } from "./controller/ProfileController";
+import { adminProfileController } from "./controller/AdminProfileController";
 
 import { ConfigUnion } from "./config/config";
 import { authPlugin } from "./middleware/auth";
@@ -33,6 +37,10 @@ const app = new Elysia()
   .use(arknightsController)
   .use(summaryController)
   .use(catController)
+  .use(agentController)
+  .use(reservationController)
+  .use(profileController)
+  .use(adminProfileController)
   .listen(6040);
 
 console.log(

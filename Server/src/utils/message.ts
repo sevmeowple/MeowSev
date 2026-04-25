@@ -289,29 +289,24 @@ interface SendPrivateMessageConfig {
 }
 
 /**
- * 通用消息发送函数 - 群聊
+ * 通用消息发送函数 - 群聊（通过 Satori API）
  */
 export async function sendGroupMessage(config: SendGroupMessageConfig): Promise<boolean> {
   try {
-    const baseUrl = config.baseUrl || 'http://127.0.0.1:3033';
-    
-    // 转换消息格式
-    const messageData = convertToOneBotFormat(config.message);
-    
-    const requestData = {
-      group_id: config.groupId,
-      message: messageData
-    };
-
+    const baseUrl = config.baseUrl || 'http://127.0.0.1:5140';
     const axiosConfig = {
       method: 'post' as const,
-      url: `${baseUrl}/send_group_msg`,
-      headers: { 
-        'Content-Type': 'application/json'
+      url: `${baseUrl}/satori/v1/message.create`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Satori-Platform': 'onebot',
+        'Satori-User-ID': '2314554773',
       },
-      data: JSON.stringify(requestData)
+      data: JSON.stringify({
+        channel_id: config.groupId,
+        content: messageToString(config.message),
+      }),
     };
-
     const response = await axios(axiosConfig);
     console.log('群聊消息发送成功:', response.data);
     return true;
@@ -322,29 +317,24 @@ export async function sendGroupMessage(config: SendGroupMessageConfig): Promise<
 }
 
 /**
- * 通用消息发送函数 - 私聊
+ * 通用消息发送函数 - 私聊（通过 Satori API）
  */
 export async function sendPrivateMessage(config: SendPrivateMessageConfig): Promise<boolean> {
   try {
-    const baseUrl = config.baseUrl || 'http://127.0.0.1:3033';
-    
-    // 转换消息格式
-    const messageData = convertToOneBotFormat(config.message);
-    
-    const requestData = {
-      user_id: config.userId,
-      message: messageData
-    };
-
+    const baseUrl = config.baseUrl || 'http://127.0.0.1:5140';
     const axiosConfig = {
       method: 'post' as const,
-      url: `${baseUrl}/send_private_msg`,
-      headers: { 
-        'Content-Type': 'application/json'
+      url: `${baseUrl}/satori/v1/message.create`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Satori-Platform': 'onebot',
+        'Satori-User-ID': '2314554773',
       },
-      data: JSON.stringify(requestData)
+      data: JSON.stringify({
+        channel_id: `private:${config.userId}`,
+        content: messageToString(config.message),
+      }),
     };
-
     const response = await axios(axiosConfig);
     console.log('私聊消息发送成功:', response.data);
     return true;
@@ -352,6 +342,17 @@ export async function sendPrivateMessage(config: SendPrivateMessageConfig): Prom
     console.error('发送私聊消息失败:', error);
     return false;
   }
+}
+
+/**
+ * 将 MessageObject 转换为纯文本字符串（供 Koishi 代理接口使用）
+ */
+function messageToString(message: string | MessageObject | MessageObject[]): string {
+  if (typeof message === 'string') return message;
+  if (Array.isArray(message)) {
+    return message.map(m => m.content || m.text || '').join('');
+  }
+  return message.content || message.text || '';
 }
 
 /**

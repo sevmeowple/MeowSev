@@ -12,6 +12,10 @@ export interface Message {
   platform: string;            // 平台 (onebot, discord 等)
   timestamp: number;            // 时间戳
   created_at?: string;          // 创建时间
+  // W3: 新增字段
+  is_processed?: number;        // 0=未处理, 1=实时处理过, 2=定时补偿过
+  has_link?: number;            // 0/1
+  has_image?: number;           // 0/1
 }
 
 export const MessageSchema = {
@@ -30,7 +34,17 @@ export const MessageSchema = {
       message_type TEXT NOT NULL,
       platform TEXT NOT NULL,
       timestamp INTEGER NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      is_processed INTEGER DEFAULT 0,
+      has_link INTEGER DEFAULT 0,
+      has_image INTEGER DEFAULT 0
     )
+  `,
+  // W3: 索引优化
+  createIndexes: `
+    CREATE INDEX IF NOT EXISTS idx_messages_user_time ON messages(user_id, timestamp);
+    CREATE INDEX IF NOT EXISTS idx_messages_channel_time ON messages(channel_id, timestamp);
+    CREATE INDEX IF NOT EXISTS idx_messages_processed ON messages(is_processed, timestamp);
+    CREATE INDEX IF NOT EXISTS idx_messages_has_link ON messages(has_link, channel_id, timestamp);
   `
 };

@@ -10,7 +10,25 @@ baseURL = "https://openrouter.ai/api/v1" # 这个url随便填,因为用的sdk,�
 modelID = "moonshotai/kimi-k2"
 viewmodelID = "google/gemini-2.5-flash" # 新增这一行,用于指定视图模型ID
 
-[ai.openai]
-apiKey = "openai-api-key" # 替换为你的 OpenAI API Key
-modelID = "kimi-k2-turbo-preview"
-baseURL = "https://api.moonshot.cn/v1"
+# ========== 旧配置：Moonshot Kimi K2.5（已停用，保留以便回滚）==========
+# [ai.openai]
+# apiKey = "openai-api-key"
+# baseURL = "https://api.moonshot.cn/v1"
+# modelID = "kimi-k2-turbo-preview"
+# modelID = "kimi-k2.5"
+# temperature = 1
+
+# ========== 新配置：Kimi K2.6 (k26)（已停用，保留以便回滚）==========
+# [ai.openai]
+# apiKey = "sk-aimS2hf75zRd7s72JOgTyXukznbChhQW4NeDiXgVuwh45nHv"
+# baseURL = "https://api.moonshot.cn/v1"
+# modelID = "kimi-k2.6"
+# temperature = 1  # kimi-k2.6 只允许 temperature = 1
+
+# ========== Code Plan 通道：Kimi K2.6 (k26) ==========
+[ai.codeplan]
+enabled = true
+provider = "kimi"
+apiKey = "sk-kimi-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+baseURL = "https://api.kimi.com/coding/v1"
+modelID = "kimi-for-coding"

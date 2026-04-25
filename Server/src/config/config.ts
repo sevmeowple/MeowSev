@@ -15,6 +15,23 @@ import { rogueItemSearchTool } from "./AI/plugins/rogueItems";
 import { getMemeManager } from "./plugins/meme";
 import { weatherAltTool } from "./AI/plugins/weatherAlt";
 import { memeTool } from "./AI/plugins/meme";
+import { createReservationTool, listReservationsTool, getReservationDetailTool } from "./AI/plugins/reservation";
+import { getUserProfileTool, searchUserMemoryTool } from "./AI/plugins/profile";
+import { searchRecentMessagesTool } from "./AI/plugins/contextSearch";
+import { ProfileService } from "@/service/Profile/ProfileService";
+import { ProfileWorker } from "@/service/Profile/ProfileWorker";
+import { ProfileScheduler } from "@/service/Profile/ProfileScheduler";
+import { setProfileService, setProfileWorker, setProfileScheduler } from "@/service/Profile/instance";
+
+const AgentConfigSchema = z.object({
+  description: z.string().default(''),
+  systemPrompt: z.string().default('你是一个智能助手。'),
+  tools: z.array(z.string()).default([]),
+  maxSteps: z.number().min(1).max(20).default(3),
+  reportToGroup: z.boolean().default(false),
+  reportGroupId: z.string().optional(),
+  enabled: z.boolean().default(true),
+});
 
 export const AppConfigSchema = z.object({
   port: z.number().default(6040),
@@ -50,6 +67,7 @@ export const AppConfigSchema = z.object({
       default: " ",
       groups: {},
     }),
+  agents: z.record(z.string(), AgentConfigSchema).default({}),
 });
 
 export type AppConfig = z.infer<typeof AppConfigSchema>;
@@ -78,9 +96,29 @@ export function CreateConfigUnion(AppConfig: AppConfig): ConfigUnionType {
   aiClient.registerTool(weatherAltTool);
   // aiClient.registerTool(rogueItemSearchTool);
 
+  // 预约工具已禁用
+  // aiClient.registerTool(createReservationTool);
+  // aiClient.registerTool(listReservationsTool);
+  // aiClient.registerTool(getReservationDetailTool);
+
   //   // if (AppConfig.plugins.meme.enabled) {
   //   aiClient.registerTool(memeTool);
   // }
+
+  // 初始化社交档案系统
+  const profileService = new ProfileService(db);
+  const profileWorker = new ProfileWorker(aiClient, db);
+  const profileScheduler = new ProfileScheduler(profileWorker, db);
+  setProfileService(profileService);
+  setProfileWorker(profileWorker);
+  setProfileScheduler(profileScheduler);
+  console.log("📋 ProfileService & ProfileWorker & ProfileScheduler 已初始化");
+
+  // 注册档案查询工具到 AI 客户端
+  aiClient.registerTool(getUserProfileTool);
+  aiClient.registerTool(searchUserMemoryTool);
+  aiClient.registerTool(searchRecentMessagesTool);
+  console.log("🔧 档案工具已注册到 AI 客户端");
 
   return {
     app: AppConfig,

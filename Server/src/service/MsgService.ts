@@ -53,6 +53,22 @@ export class MsgService {
   constructor(ConfigUnion: ConfigUnionType) {
     this.db = ConfigUnion.database;
     this.db.exec(MessageSchema.createTable);
+    // W3: 兼容旧表结构，添加缺失的列
+    this.migrateW3Columns();
+  }
+
+  private migrateW3Columns(): void {
+    try {
+      this.db.exec(`ALTER TABLE messages ADD COLUMN is_processed INTEGER DEFAULT 0`);
+    } catch { /* 列已存在 */ }
+    try {
+      this.db.exec(`ALTER TABLE messages ADD COLUMN has_link INTEGER DEFAULT 0`);
+    } catch { /* 列已存在 */ }
+    try {
+      this.db.exec(`ALTER TABLE messages ADD COLUMN has_image INTEGER DEFAULT 0`);
+    } catch { /* 列已存在 */ }
+    // W3: 创建索引
+    this.db.exec(MessageSchema.createIndexes);
   }
 
   // 新增：注册 CQ 码处理器
@@ -144,11 +160,16 @@ export class MsgService {
 
   // 更新创建消息方法
   async createMessage(messageData: Omit<Message, 'id' | 'created_at'>): Promise<Message> {
+    // W3: 自动检测链接和图片
+    const hasLink = /https?:\/\/|www\.|\.com|\.cn|\.net|\.org/.test(messageData.content) ? 1 : 0;
+    const hasImage = messageData.content.includes('<img') || messageData.message_type === 'image' ? 1 : 0;
+
     const query = this.db.query(`
     INSERT INTO messages (
       message_id, user_id, user_name, user_nick, group_id, 
-      channel_id, content, raw_message, message_type, platform, timestamp
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      channel_id, content, raw_message, message_type, platform, timestamp,
+      has_link, has_image
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     RETURNING *
   `);
 
@@ -156,14 +177,16 @@ export class MsgService {
       messageData.message_id,
       messageData.user_id,
       messageData.user_name,
-      messageData.user_nick ?? null,       // 转换 undefined 为 null
-      messageData.group_id ?? null,        // 转换 undefined 为 null
+      messageData.user_nick ?? null,
+      messageData.group_id ?? null,
       messageData.channel_id,
       messageData.content,
-      messageData.raw_message ?? null,     // 转换 undefined 为 null
+      messageData.raw_message ?? null,
       messageData.message_type,
       messageData.platform,
-      messageData.timestamp
+      messageData.timestamp,
+      hasLink,
+      hasImage
     ) as Message;
   }
 

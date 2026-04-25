@@ -2,6 +2,7 @@ import { Elysia } from "elysia";
 import { RouteRegistry } from "../routes/registry";
 import { MsgService } from "@service/MsgService";
 import { ConfigUnion } from "@/config/config";
+import { profileWorker } from "@/service/Profile/instance";
 import { createXiaohongshuProcessor } from "@/service/message/processors/xhsProcessor";
 import { EchoPluginController } from "./messagePlugins/EchoPluginController";
 import { BiliCardPluginController } from './messagePlugins/BiliCardPluginController';
@@ -35,7 +36,12 @@ export const msgController = new Elysia()
     const sessionData = body.data as any;
     // console.info(sessionData)
     // 无论如何先保存消息
-    await msgService.handleMessage(sessionData);
+    const savedMessage = await msgService.handleMessage(sessionData);
+
+    // W2: 档案实时队列（MessageFilter 在 ProfileWorker 内部处理）
+    if (profileWorker && savedMessage) {
+      profileWorker.enqueue(savedMessage);
+    }
 
     // 优先检查是否为卡片消息（使用 _data.raw_message）
     const raw = sessionData?._data?.raw_message ?? '';

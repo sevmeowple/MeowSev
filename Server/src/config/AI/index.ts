@@ -2,23 +2,35 @@ import { generateText, streamText, tool } from 'ai';
 import { createOpenRouter } from "@openrouter/ai-sdk-provider"
 import { createOpenAI } from '@ai-sdk/openai';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
+import { createKimiCodePlanProvider, type CodePlanConfig } from './providers/CodePlanProvider';
 import { z } from 'zod';
 import type { CallSettings, GenerateTextResult, ImagePart, LanguageModel, ModelMessage, StreamTextResult, TextPart, UserContent } from 'ai';
-import { MessageObject } from '@/utils/message';
+import { MessageObject, SessionData } from '@/utils/message';
+import { downloadImageAsBase64 } from '@/utils/imageUtils';
 // AI 配置 Schema
 export const AIConfigSchema = z.object({
     baseURL: z.url(),
     apiKey: z.string().min(1, "API Key 不能为空"),
     modelID: z.string().default("gpt-3.5-turbo"),
     viewmodelID: z.string().default("google/gemini-2.5-flash"),
+    temperature: z.number().min(0).max(2).default(0.7),
     openai: z.object({
         apiKey: z.string().optional(),
         modelID: z.string().default("gpt-3.5-turbo"),
-        baseURL: z.string().default("https://api.openai.com/v1")
+        baseURL: z.string().default("https://api.openai.com/v1"),
+        temperature: z.number().min(0).max(2).optional(),
+    }).optional(),
+    codeplan: z.object({
+        enabled: z.boolean().default(false),
+        provider: z.enum(['kimi']).default('kimi'),
+        apiKey: z.string(),
+        baseURL: z.string().default('https://api.kimi.com/coding/v1'),
+        modelID: z.string().default('kimi-for-coding'),
     }).optional()
 });
 
 export type AIConfig = z.infer<typeof AIConfigSchema>;
+export { CodePlanConfig };
 
 // export interface ChatMessage {
 //     role: 'system' | 'user' | 'assistant';
@@ -31,7 +43,7 @@ export interface ToolDefinition {
     name: string;
     description: string;
     inputSchema: z.ZodSchema;
-    execute: (params: any) => Promise<any> | any;
+    execute: (params: any, session?: SessionData) => Promise<any> | any;
 }
 
 export type ToolResult = {
@@ -50,26 +62,38 @@ export class AIClientSDK {
     private model: LanguageModel;
     private modelalt: LanguageModel;
     private viewmodel: LanguageModel;
+    private temperature: number;
     private context: ChatMessage[] = [];
     private tools: Record<string, ToolDefinition> = {};
 
     constructor(config: AIConfig) {
+        this.temperature = config.temperature ?? 0.7;
         this.model = createOpenRouter({
             apiKey: config.apiKey,
         })(config.modelID || 'gpt-3.5-turbo');
         this.viewmodel = createOpenRouter({
             apiKey: config.apiKey,
         })(config.viewmodelID || 'google/gemini-2.5-flash');
-        if (config.openai) {
+
+        if (config.codeplan?.enabled) {
+            // Code Plan 专用通道
+            this.model = createKimiCodePlanProvider(config.codeplan);
+            this.modelalt = this.model;
+        } else if (config.openai) {
             this.modelalt = createOpenAICompatible({
                 name: "kimi",
                 apiKey: config.openai.apiKey,
                 baseURL: config.openai.baseURL,
             })(config.openai.modelID || 'gpt-3.5-turbo');
+            // openai 子配置的 temperature 优先级更高
+            if (config.openai.temperature !== undefined) {
+                this.temperature = config.openai.temperature;
+            }
+            this.model = this.modelalt;
         } else {
-            this.modelalt = this.model; // 如果没有配置 OpenAI，则使用默认模型
+            this.modelalt = this.model;
+            this.model = this.modelalt;
         }
-        this.model = this.modelalt
     }
 
     debugTools(): void {
@@ -124,7 +148,8 @@ export class AIClientSDK {
         message: string,
         enableTools: boolean = true,
         enableVision: boolean = false,
-        replyOnImage: boolean = false
+        replyOnImage: boolean = false,
+        session?: SessionData
     ): Promise<MessageObject[]> {
 
         const executeWithFallback = async (options: any) => {
@@ -146,7 +171,7 @@ export class AIClientSDK {
             const baseOptions = {
                 model: this.model,
                 messages: this.context,
-                temperature: 0.7,
+                temperature: this.temperature,
             };
 
             let result: any;
@@ -161,7 +186,8 @@ export class AIClientSDK {
                         inputSchema: toolDef.inputSchema,
                         execute: async (params: any) => {
                             console.log(`🔧 执行工具: ${name}`, params);
-                            const toolResult = await toolDef.execute(params);
+                            // 传递session给支持上下文的工具
+                            const toolResult = await toolDef.execute(params, session);
 
                             if (toolResult.userMessages) {
                                 allUserMessages.push(...toolResult.userMessages);
@@ -231,7 +257,7 @@ export class AIClientSDK {
                                     model: this.viewmodel,
                                     messages: visionMessages,
                                     system: '你是一个智能助手，能够分析图片内容并与用户进行自然的对话。请根据用户的问题和提供的图片给出详细、有用的回答。',
-                                    temperature: 0.7,
+                                    temperature: this.temperature,
                                 });
                                 finalText = visionResult.text;
                                 console.log('🖼️ 视觉模型回复:', finalText);
@@ -269,7 +295,7 @@ export class AIClientSDK {
                                                     content: '请基于上述信息给我一个自然、详细的分析，不要重复说要查询什么，直接分析数据内容即可。'
                                                 }
                                             ],
-                                            temperature: 0.7,
+                                            temperature: this.temperature,
                                         });
                                     } catch (error) {
                                         console.warn('文本模型失败，使用备用模型:', error);
@@ -286,7 +312,7 @@ export class AIClientSDK {
                                                     content: '请基于上述信息给我一个自然、详细的分析，不要重复说要查询什么，直接分析数据内容即可。'
                                                 }
                                             ],
-                                            temperature: 0.7,
+                                            temperature: this.temperature,
                                         });
                                     }
                                 })();
@@ -338,7 +364,7 @@ export class AIClientSDK {
             const baseOptions = {
                 model: this.model,
                 messages: this.context,
-                temperature: 0.7,
+                temperature: this.temperature,
                 maxOutputTokens: 1000,
             };
 
@@ -382,7 +408,7 @@ export class AIClientSDK {
             const result = await generateText({
                 model: this.model,
                 messages,
-                temperature: 0.7,
+                temperature: this.temperature,
                 maxOutputTokens: 1000,
             });
 
@@ -397,9 +423,18 @@ export class AIClientSDK {
     async analyzeImage(
         imageUrl: string,
         prompt: string = "请描述这张图片",
-        systemPrompt?: string
+        options?: {
+            systemPrompt?: string;
+            useMainModel?: boolean; // 是否使用主模型（kimi2.5 等支持视觉的模型）
+        }
     ): Promise<string> {
         try {
+            // 自动下载并转换为 base64
+            const base64Image = await downloadImageAsBase64(imageUrl);
+            if (!base64Image) {
+                throw new Error('图片下载失败');
+            }
+
             const userContent: UserContent = [
                 {
                     type: 'text' as const,
@@ -407,7 +442,7 @@ export class AIClientSDK {
                 } as TextPart,
                 {
                     type: 'image' as const,
-                    image: imageUrl
+                    image: base64Image // 使用 base64 data URL
                 } as ImagePart
             ];
 
@@ -418,16 +453,93 @@ export class AIClientSDK {
                 }
             ];
 
+            // 根据 useMainModel 选择模型
+            const selectedModel = options?.useMainModel ? this.model : this.viewmodel;
+            const modelName = options?.useMainModel ? '主模型' : '视觉模型';
+
+            console.log(`🖼️ 使用 ${modelName} 分析图片`);
+
             const result = await generateText({
-                model: this.viewmodel,
+                model: selectedModel,
                 messages,
-                system: systemPrompt || '你是一个智能助手，能够分析图片内容并给出详细、有用的描述。',
-                temperature: 0.7,
+                system: options?.systemPrompt || '你是一个智能助手，能够分析图片内容并给出详细、有用的描述。',
+                temperature: this.temperature,
             });
 
             return result.text;
         } catch (error) {
             console.error('视觉分析失败:', error);
+            throw new Error('视觉服务暂时不可用');
+        }
+    }
+
+    // 批量分析多张图片
+    async analyzeImages(
+        imageUrls: string[],
+        prompt: string = "请描述这些图片",
+        options?: {
+            systemPrompt?: string;
+            useMainModel?: boolean;
+        }
+    ): Promise<string> {
+        if (imageUrls.length === 0) {
+            throw new Error('没有提供图片');
+        }
+
+        try {
+            // 并行下载所有图片
+            console.log(`📥 开始下载 ${imageUrls.length} 张图片...`);
+            const base64Images = await Promise.all(
+                imageUrls.map(url => downloadImageAsBase64(url))
+            );
+
+            // 过滤掉下载失败的图片
+            const validImages = base64Images.filter((img): img is string => img !== null);
+
+            if (validImages.length === 0) {
+                throw new Error('所有图片下载失败');
+            }
+
+            if (validImages.length < imageUrls.length) {
+                console.warn(`⚠️ ${imageUrls.length - validImages.length} 张图片下载失败`);
+            }
+
+            // 构建包含多张图片的消息内容
+            const imageParts: ImagePart[] = validImages.map(base64 => ({
+                type: 'image' as const,
+                image: base64
+            }));
+
+            const userContent: UserContent = [
+                {
+                    type: 'text' as const,
+                    text: prompt
+                } as TextPart,
+                ...imageParts
+            ];
+
+            const messages: ChatMessage[] = [
+                {
+                    role: 'user' as const,
+                    content: userContent
+                }
+            ];
+
+            const selectedModel = options?.useMainModel ? this.model : this.viewmodel;
+            const modelName = options?.useMainModel ? '主模型' : '视觉模型';
+
+            console.log(`🖼️ 使用 ${modelName} 分析 ${validImages.length} 张图片`);
+
+            const result = await generateText({
+                model: selectedModel,
+                messages,
+                system: options?.systemPrompt || '你是一个智能助手，能够分析图片内容并给出详细、有用的描述。',
+                temperature: this.temperature,
+            });
+
+            return result.text;
+        } catch (error) {
+            console.error('批量视觉分析失败:', error);
             throw new Error('视觉服务暂时不可用');
         }
     }
@@ -454,7 +566,7 @@ export class AIClientSDK {
 
             const result = await executeWithFallback({
                 messages,
-                temperature: 0.7,
+                temperature: this.temperature,
                 maxOutputTokens: 2000,
             });
 
@@ -575,6 +687,16 @@ ${criteria.map((c, i) => `${i + 1}. ${c}`).join('\n')}
     // 清空所有工具
     clearTools(): void {
         this.tools = {};
+    }
+
+    // 获取模型实例（供 Agent 引擎使用）
+    getModel(): LanguageModel {
+        return this.model;
+    }
+
+    // 获取当前 temperature 配置
+    getTemperature(): number {
+        return this.temperature;
     }
 }
 
