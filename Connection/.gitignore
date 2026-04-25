@@ -5,7 +5,11 @@ dist
 /temp
 external
 
+.env
 .env.local
+koishi.yml
+yakumo.yml
+.vscode/
 
 .pnp.*
 .yarn/*
