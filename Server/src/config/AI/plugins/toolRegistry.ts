@@ -9,6 +9,7 @@ import { chronicleSearchTool, chronicleUserHistoryTool, chronicleUserSearchTool 
 import { createReservationTool, listReservationsTool, getReservationDetailTool } from "./reservation";
 import { getUserProfileTool, searchUserMemoryTool } from "./profile";
 import { searchRecentMessagesTool } from "./contextSearch";
+import { kimiSearchTool, kimiFetchTool } from "./kimiSearch";
 
 /**
  * 中央工具注册表
@@ -30,6 +31,8 @@ const toolRegistry: Record<string, ToolDefinition> = {
     getUserProfile: getUserProfileTool,
     searchUserMemory: searchUserMemoryTool,
     searchRecentMessages: searchRecentMessagesTool,
+    kimiSearch: kimiSearchTool,
+    kimiFetch: kimiFetchTool,
 };
 
 export function getToolsByNames(names: string[]): ToolDefinition[] {

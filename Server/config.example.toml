@@ -32,3 +32,12 @@ provider = "kimi"
 apiKey = "sk-kimi-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 baseURL = "https://api.kimi.com/coding/v1"
 modelID = "kimi-for-coding"
+
+# ========== Kimi Code 搜索/网页获取工具 ==========
+# 不配置 apiKey 时默认复用 [ai.codeplan].apiKey。
+[ai.kimiSearch]
+enabled = true
+searchURL = "https://api.kimi.com/coding/v1/search"
+fetchURL = "https://api.kimi.com/coding/v1/fetch"
+defaultLimit = 8
+timeoutSeconds = 30

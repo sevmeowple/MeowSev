@@ -26,6 +26,14 @@ export const AIConfigSchema = z.object({
         apiKey: z.string(),
         baseURL: z.string().default('https://api.kimi.com/coding/v1'),
         modelID: z.string().default('kimi-for-coding'),
+    }).optional(),
+    kimiSearch: z.object({
+        enabled: z.boolean().default(true),
+        apiKey: z.string().optional(),
+        searchURL: z.string().default('https://api.kimi.com/coding/v1/search'),
+        fetchURL: z.string().default('https://api.kimi.com/coding/v1/fetch'),
+        defaultLimit: z.number().min(1).max(20).default(8),
+        timeoutSeconds: z.number().min(1).max(120).default(30),
     }).optional()
 });
 
@@ -135,8 +143,8 @@ export class AIClientSDK {
         for (const [name, toolDef] of Object.entries(this.tools)) {
             toolsForAI[name] = tool({
                 description: toolDef.description,
-                inputSchema: toolDef.inputSchema,
-                execute: toolDef.execute,
+                inputSchema: toolDef.inputSchema as any,
+                execute: toolDef.execute as any,
             });
         }
 
@@ -183,7 +191,7 @@ export class AIClientSDK {
                 for (const [name, toolDef] of Object.entries(this.tools)) {
                     wrappedTools[name] = tool({
                         description: toolDef.description,
-                        inputSchema: toolDef.inputSchema,
+                        inputSchema: toolDef.inputSchema as any,
                         execute: async (params: any) => {
                             console.log(`🔧 执行工具: ${name}`, params);
                             // 传递session给支持上下文的工具
