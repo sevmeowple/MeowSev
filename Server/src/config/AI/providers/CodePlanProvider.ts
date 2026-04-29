@@ -1,6 +1,13 @@
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import type { LanguageModel } from 'ai';
 
+export const KIMI_CODE_USER_AGENT = 'KimiCLI/1.30.0';
+
+export function applyKimiCodeHeaders(headers: Headers): Headers {
+    headers.set('User-Agent', KIMI_CODE_USER_AGENT);
+    return headers;
+}
+
 export interface CodePlanConfig {
     enabled: boolean;
     provider: 'kimi';
@@ -18,7 +25,7 @@ export interface CodePlanConfig {
 export function createKimiCodePlanProvider(config: CodePlanConfig): LanguageModel {
     const originalFetch = globalThis.fetch;
 
-    globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+    const kimiFetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
         const url = typeof input === 'string'
             ? input
             : input instanceof URL
@@ -28,13 +35,17 @@ export function createKimiCodePlanProvider(config: CodePlanConfig): LanguageMode
         if (url.includes('api.kimi.com')) {
             const newInit = init ? { ...init } : {};
             const headers = new Headers(init?.headers);
-            headers.set('User-Agent', 'KimiCLI/1.30.0');
+            applyKimiCodeHeaders(headers);
             newInit.headers = headers;
             return originalFetch(input, newInit);
         }
 
         return originalFetch(input, init);
     };
+    if ('preconnect' in originalFetch) {
+        (kimiFetch as typeof fetch).preconnect = originalFetch.preconnect.bind(originalFetch);
+    }
+    globalThis.fetch = kimiFetch as typeof fetch;
 
     return createOpenAICompatible({
         name: 'kimi',

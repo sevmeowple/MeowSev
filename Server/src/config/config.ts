@@ -18,6 +18,7 @@ import { memeTool } from "./AI/plugins/meme";
 import { createReservationTool, listReservationsTool, getReservationDetailTool } from "./AI/plugins/reservation";
 import { getUserProfileTool, searchUserMemoryTool } from "./AI/plugins/profile";
 import { searchRecentMessagesTool } from "./AI/plugins/contextSearch";
+import { kimiSearchTool, kimiFetchTool, setKimiSearchConfig } from "./AI/plugins/kimiSearch";
 import { ProfileService } from "@/service/Profile/ProfileService";
 import { ProfileWorker } from "@/service/Profile/ProfileWorker";
 import { ProfileScheduler } from "@/service/Profile/ProfileScheduler";
@@ -89,6 +90,17 @@ export function CreateConfigUnion(AppConfig: AppConfig): ConfigUnionType {
 
   // 初始化 AI 客户端
   const aiClient = createAISDKClient(AppConfig.ai);
+
+  const kimiSearchEnabled = AppConfig.ai.kimiSearch?.enabled ?? AppConfig.ai.codeplan?.enabled ?? false;
+  if (kimiSearchEnabled) {
+    setKimiSearchConfig({
+      ...AppConfig.ai.kimiSearch,
+      apiKey: AppConfig.ai.kimiSearch?.apiKey || AppConfig.ai.codeplan?.apiKey,
+    });
+    aiClient.registerTool(kimiSearchTool);
+    aiClient.registerTool(kimiFetchTool);
+    console.log("🔎 Kimi Search & Fetch 工具已注册到 AI 客户端");
+  }
 
   // aiClient.registerTool(weatherTool);
   // aiClient.registerTool(picTool);
